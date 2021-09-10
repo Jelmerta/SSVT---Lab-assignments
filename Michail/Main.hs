@@ -1,9 +1,14 @@
+module Main where
+    
 import Exercise1
 import Exercise2
+import Exercise3
 
 
 main :: IO ()
 main = do
     exercise1
     exercise2
+    exercise3
+
     
