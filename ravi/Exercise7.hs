@@ -26,4 +26,4 @@ exercise7 :: IO ()
 exercise7 = do
     putStrLn "--- Exercise 7 ---"
     print (luhn 79927398713)
-    putStrLn ""
+    putStrLn "\n"
