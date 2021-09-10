@@ -11,12 +11,7 @@ import GHC.Base (Bool)
 
 ---- Excercise 1
 
--- Print test results
-{-
-main :: IO ()
-main = do
-    putStrLn "== Proof induction (Fail) ==" quickCheckResult $ forAll genPositiveIntegers testSumSquares
--}
+
 
 -- Left side 
 
@@ -45,7 +40,6 @@ testBaseCase f g = f 1 == g 1
 
 
 -- Although we cannot say that the equality of the two arguments works in every case we can run a significant amount of test to reach a fairly confident rerdict.
-
 -- Method 1: Test the equality of the two arguments by generating multiple natural numbers and applying QuickCheck.
 
 -- W1 Ex2
