@@ -13,7 +13,7 @@ counterExamples = filter (not . prime) primeProducts
 
 exercise6 :: IO ()
 exercise6 = do
-    putStrLn "--- Exercise 6 ---"
+    putStrLn "--- Exercise 6 ---\n"
     putStrLn "The smallest non-prime of the form (p_1 * ... * p_n) + 1 is:"
     print (head counterExamples)
     putStrLn "\n"

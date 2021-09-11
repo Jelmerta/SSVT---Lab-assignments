@@ -11,20 +11,19 @@ import Lab1
 -- 6. If 5 is true, given 4. it arises that Arnold and Carl are both truth tellers which is impossible
 -- 7. Therefore, Arnold and Jack are lying as stated in 2.
 -- 8. The killer is Jack which derives from the truth tellers Mathew and Peter
--- Be
--- To do so, we need to calculate all the possible combinations of three people telling the truth
--- There are 5 people so all the possible permutation are factorial 5 = 120 
--- We need to filter out the duplicates 
--- By the help of a truth table we need to determine the implications of
+
+-- The reasoning for the implementation in Haskell is different:
+-- We assume somebody is the perpetrator and then determine based on that which boys have been truthful or lying.
+-- Then we check whether the number of truthful boys is equal to exactly three, in which case we have the found the perpetrator.
 
 -- Determines whether a boy is telling the truth, assuming perp is guilty.
 truthful :: Boy -> Boy -> Bool
 truthful perp boy
     | boy == Matthew = perp /= Carl && perp /= Matthew
     | boy == Peter = perp == Matthew || perp == Jack
-    | boy == Jack = (not $ truthful Matthew perp) && (not $ truthful Peter perp)
-    | boy == Arnold = truthful Matthew perp /= truthful Peter perp
-    | boy == Carl = not (truthful Arnold perp)
+    | boy == Jack = (not $ truthful perp Matthew) && (not $ truthful perp Peter)
+    | boy == Arnold = truthful perp Matthew /= truthful perp Peter
+    | boy == Carl = not (truthful perp Arnold)
 
 -- Gives a list indicating which boys are telling the truth, assuming perp is guilty.
 truthVals :: Boy -> [Bool]
@@ -42,7 +41,7 @@ honest = filter (truthful $ head guilty) boys
 
 exercise8 :: IO ()
 exercise8 = do
-    putStrLn "--- Exercise 8 ---"
+    putStrLn "--- Exercise 8 ---\n"
     putStrLn "Guilty boy:"
     print guilty
     putStrLn "\nHonest boys:"

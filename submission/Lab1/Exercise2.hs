@@ -61,7 +61,7 @@ genPositiveIntegers = abs <$> (arbitrary :: Gen Integer) `suchThat` (>=0)
 
 exercise2 :: IO ()
 exercise2 = do
-    putStrLn "--- Exercise 2 ---"
+    putStrLn "--- Exercise 2 ---\n"
     putStrLn "W1EX4: Using Quickcheck to find out if the following property of the\
     \ function 'subsequences': |subsequences(A)| = 2^|A| holds"
     quickCheckResult $ forAll genPositiveIntegers testSetsLim
