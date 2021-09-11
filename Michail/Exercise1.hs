@@ -16,7 +16,7 @@ import Test.QuickCheck
 ---- P(0): 0 = 0 (True)
 -- Inductive case 
 ---- Inductive Hypothesis (n = k)
------- P(k): 1+2+3+..+k = k(k+1)/2 -> means that 
+------ P(k): 1+2+3+..+k = k(k+1)/2 
 ---- To be proved
 ------ P(k+1): 1+2+3+..+(k+1) = (k+1)(k+2)/2
 ---- Proof
