@@ -14,7 +14,7 @@
 -- The remaining list will contain all primes up until n.
 
 -- There are many ways to improve this: we do not need to check divisibility any longer for numbers higher than sqrt(n) as one of factored numbers will be lower than it: meaning the number cannot be prime.
--- TODO Other ways to improve
+-- TODO Other ways to improgit sve
 
 -- starting with 2 up until n (10000 in this exercise), so we can use [2..10000].
 getPrimes :: [Integer] -> [Integer]
