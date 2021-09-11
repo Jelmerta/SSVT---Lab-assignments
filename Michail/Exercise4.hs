@@ -7,6 +7,7 @@ revPrimes :: [Integer]
 revPrimes = [x | x <- [1..10000], prime x && prime (reversal x)]
 
 -- Testing the generated list using recursion to determine if the produced numbers meet the criteria
+-- Pre-supposed that the function prime is correct
 testRevPrimes :: [Integer] -> Bool 
 testRevPrimes [] = True 
 testRevPrimes (x:xs) | prime x && prime (reversal x) =testRevPrimes xs
