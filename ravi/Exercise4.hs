@@ -9,6 +9,7 @@ mirrorPrimes = [n | n <- filter prime [1..10000], prime $ Lab1.reversal n]
 testMirrorPrimes :: Bool
 testMirrorPrimes = all (\p -> (prime p) && (prime $ Lab1.reversal p)) mirrorPrimes
 
+
 exercise4 :: IO ()
 exercise4 = do
     putStrLn "--- Exercise 4 ---"

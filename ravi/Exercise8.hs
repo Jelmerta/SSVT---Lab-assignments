@@ -23,6 +23,7 @@ guilty, honest :: [Boy]
 guilty = filter ((==3) . nrTruthful) boys
 honest = filter (truthful $ head guilty) boys
 
+
 exercise8 :: IO ()
 exercise8 = do
     putStrLn "--- Exercise 8 ---"
