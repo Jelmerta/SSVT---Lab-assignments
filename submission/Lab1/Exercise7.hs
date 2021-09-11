@@ -25,6 +25,9 @@ luhn :: Int -> Bool
 luhn n = let d = digits n in last d == (checkDigit $ init $ d)
 
 
+-- To test the luhn-function we are going to generate 10 digit numbers and use a different implementation for the luhn-function'.
+-- We are going to run QuickCheck and check the equality of the results of the two luhn-fuctions for any given 10 digit number.
+
 exercise7 :: IO ()
 exercise7 = do
     putStrLn "--- Exercise 7 ---"
