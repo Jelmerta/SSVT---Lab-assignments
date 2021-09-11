@@ -11,11 +11,11 @@ import Data.List
 
 -- Mathematical Induction
 -- Base Case
-----  Empty set a has a cardinality n = 0 -> The powerset of an empty set by default has 1 elements.
----- It checks that P(0): 1 = 2 ^ 0 (True)
+---- Empty set a has a cardinality n = 0 -> The powerset of an empty set by default has 1 element.
+---- It checks that |P(0)|: 1 = 2 ^ 0 (True)
 -- Induction Case
 ---- Inductive hypothesis
------- P(k) A set of k element has 2^k subsets
+------ P(k) A set of k elements has 2^k subsets
 ---- To be proved
 ------ A set B with k+1 elements has 2^(k+1) subsets
 ---- Proof 
@@ -24,15 +24,14 @@ import Data.List
 ------ A is the original set: |A| = k and A has 2^k subsets
 ------ B = A U {e(k+1)}
 ------ Any subset of B either contains or not contains the element e(k+1)
------- The subsets of B that do not contain the element e(k+1) are substets of A as well
+------ The subsets of B that do not contain the element e(k+1) are subsets of A as well
 ------ The last subsets mentioned, from the hypothesis, are 2^k
 ------ The subsets of B that contain e(k+1), are created by including the element in the 2^k subsets mentioned above
 ------ Therefore, B contains two categories of subsets, the 2^k ones not containing e(k+1) and the rest 2^k not containing the element
 ------ |P(B)|: 2^k+ 2^k = 2*2^k = 2^(k+1) (holds)
 
 -- Haskell approach
--- Defined the set and a powerset to check the equality of |P(A)| = n^2 and generated multiple positive integers including 0. 
--- 
+-- Defined the set and a powerset to check the equality of |P(A)| = n^2 and generated multiple positive integers including 0.  
 -- The algorithm is checking if the the given relation is true for the cardinalities of the two sets but not veryfing the equality for any given number.
 
 --Creating a type Set
@@ -40,7 +39,7 @@ type Set a = [a]
 
 -- The set
 set :: Integer -> Set Integer
-set n = [x | x <- [0..n-1]]
+set n = [0..n-1]
 
 -- The powerset
 powerset :: Integer -> Set (Set Integer)
@@ -52,7 +51,7 @@ testSets :: Integer -> Bool
 testSets n = length (powerset n) == 2 ^ length (set n)
 -}
 
--- testing with numbers from 0 to 9  
+-- testing with numbers from 0 to 9 to reduce required processing power 
 testSetsLim :: Integer -> Bool
 testSetsLim n = let a = n`mod`9 in length (powerset a) == 2 ^ length (set a)
 

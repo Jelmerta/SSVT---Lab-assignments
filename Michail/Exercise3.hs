@@ -8,16 +8,16 @@ import Test.QuickCheck
 -- WK1EX5
 
 -- The number of possible permutations of given set of element is produced by the factorial of the cardinality of the set
--- Therefore, for a list xs with length n the lentgh of the list containing all the permutations should be factorial n
--- To be proved: length(perms(list n)) == factorial(length(list n))
+-- Therefore, for a list xs with length n, the lentgh of the list containing all the permutations should be factorial n
+-- To be proven: length(perms(list n)) == factorial(length(list n))
 
--- With this test, the mathematical fact is not proved for every list
+-- With this test, the mathematical fact is not proven for every list
 -- However, we are testing that the factorial of the number of the elements of the list equals the number of permutations
 -- of the same list. The length of the list is <= 0
 
 -- Creating list
 list :: Int -> [Int]
-list n = [x | x <-[1..n]]
+list n = [1..n]
 
 -- Perms algorithm
 perms :: [a] ->[[a]]
