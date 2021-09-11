@@ -23,8 +23,9 @@ import Test.QuickCheck
 ------ 1+2+3+..+k+(k+1) = k(k+1)/2+(k+1) = (k(k+1)+2(k+1))/2 = (k+2)(k+1)/2 (True)
 
 -- In Haskell, it is not possible to implement mathematical induction to prove the equalities. 
--- However an approximate a conclusion can be reached by checking the equality of the two parts of the equation using multiple natural numbers
+-- However an approximate conclusion can be reached by checking the equality of the two parts of the equation using multiple natural numbers
 -- Thus, functions for each side of the equality were created and a generator to create random natural number to be tested
+
 
 
 -- Left side 
