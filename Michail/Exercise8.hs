@@ -2,7 +2,7 @@ module Michail.Exercise8 where
 
 -- As a first step we need to forget about who did it and focus on who is telling the truth or not
 -- Thinking of the solution:
--- 1. I realised that Carl and Arnold cannot be on the same team (truth tellers or liars)
+-- 1. I realised that Carl and Arnold cannot be on the same team (truth tellers or liars), because of what Carl is saying
 -- 2. I realised that Arnold and Jack can be on the same team only if they are both lying (which would imply that both Mathew and Peter are telling the truth)
 -- 3. If Jack is telling the truth, it means that Mathew and Peter are lying so the rest of them are telling the truth to fullfil the 2:3 ratio provides by the teacher
 -- 4. This is impossible from 1.,2. therefore we know that Jack is lying
