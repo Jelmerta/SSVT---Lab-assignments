@@ -43,6 +43,11 @@ luhn' xs = total `mod` 10 == 0
 testLuhns :: Integer -> Bool
 testLuhns n = luhn (fromIntegral n) == luhn' (digits (fromIntegral n))
 
+-- Other test idea: Implement a credit card number generator and give generated
+-- credit card luhn numbers to the algorithm. It should always return true.
+-- Change one digit of the credit card number generator and
+-- give it to the algorithm. It should always return false.
+
 exercise7 :: IO ()
 exercise7 = do
     putStrLn "--- Exercise 7 ---\n"
@@ -52,7 +57,7 @@ exercise7 = do
     print (luhn' (digits 79927398713))
     putStrLn "\nChecking that both solutions are equal for 5 10 digit numbers that are including valid and invalid card numbers\n"
     print (testLuhns 79927398713) -- Valid card number
-    print (testLuhns 79924398713) -- Invalid card number
+    print (testLuhns 5376879447377997) -- Valid card number
     print (testLuhns 79927308713) -- Invalid card number
     print (testLuhns 79927398413) -- Invalid card number
     print (testLuhns 79927398710) -- Invalid card number
