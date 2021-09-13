@@ -55,7 +55,7 @@ exercise7 = do
     print (luhn 79927398713)
     putStrLn "\nSecond luhn' solution, results for a valid card number: 79927398713\n"
     print (luhn' (digits 79927398713))
-    putStrLn "\nChecking that both solutions are equal for 5 10 digit numbers that are including valid and invalid card numbers\n"
+    putStrLn "\nChecking that both solutions are equal for 5 10 digit numbers that are including valid and invalid card numbers, these should all yield true\n"
     print (testLuhns 79927398713) -- Valid card number
     print (testLuhns 5376879447377997) -- Valid card number
     print (testLuhns 79927308713) -- Invalid card number
