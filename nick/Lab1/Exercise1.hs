@@ -3,15 +3,19 @@
 import Lab1
 import Test.QuickCheck
 
+-- The first function of workshop exercise 2.
 func2  :: Integer -> Integer
 func2 n = sum (map (^2) [1..n])
 
+-- The second function of workshop exercise 2.
 func2' :: Integer -> Integer
 func2' n = (n*(n+1)*(2*n+1)) `div` 6
 
+-- The first function of workshop exercise 3.
 func3 :: Integer -> Integer
 func3 n = sum (map (^3) [1..n])
 
+-- The first function of workshop exercise 3.
 func3' :: Integer -> Integer
 func3' n = (n*(n+1) `div` 2)^2
 

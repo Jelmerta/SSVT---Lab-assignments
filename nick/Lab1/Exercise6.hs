@@ -17,4 +17,4 @@ counterExamples = [i | i <- [1..], not (prime (listProductPlusOne (nPrimes i)))]
 
 main :: IO ()
 main = do
-    print $ prime (listProductPlusOne (nPrimes 12))
+    print counterExamples

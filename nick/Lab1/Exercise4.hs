@@ -3,7 +3,7 @@
 import Lab1
 import Test.QuickCheck
 
--- All primes to number n.
+-- All primes to number n this is the provided funcion by the lab with a little change.
 primesToN :: Integer -> [Integer]
 primesToN n = 2 : filter prime [3..n] 
 

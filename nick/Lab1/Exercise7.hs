@@ -33,5 +33,10 @@ sumDigits list = map sum list
 sumToCheckDigit :: Integer -> Integer
 sumToCheckDigit sum = (10 - (sum `mod` 10))
 
+-- Test idea: Implement a credit card number generator and feed credit card
+-- numbers to the algorithm. It should always return true.
+-- Test counterexample idea: change one digit of the credit card number generator and
+-- feed it to the algorithm. It should always return false.
+
 luhn :: Integer -> Bool
 luhn input = sumToCheckDigit ( sum (sumDigits (numToDigitsList2 (doubleSecondFromRight (numToDigitsList (cutCheckDigit input)))))) == getCheckDigit input
