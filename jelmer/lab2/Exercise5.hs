@@ -1,6 +1,7 @@
 -- Recognizing and generating derangements
 -- TODO Understanding what the preconditions and postconditions
 
+import Lab2
 import Test.QuickCheck
 import Data.List
 
