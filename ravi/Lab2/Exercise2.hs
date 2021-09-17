@@ -98,8 +98,19 @@ genTriple = do
 gen3Equal :: IO (Int, Int, Int)
 gen3Equal = do
     n <- getInt 1 100
-    return (n, n, n)
+    return (n,n,n)
 
+-- Isosceles:
+-- Here we generate three numbers where exactly two of them are the same.
+-- Given this as input to our function, we expect our function to return
+-- Isosceles or NoTriangle. The reason NoTriangle wasn't an option in the
+-- previous parts is because a Pythagorean triple always forms a triangle
+-- and 3 equal numbers also always form a triangle.
+gen2Equal :: IO (Int, Int, Int)
+gen2Equal = do
+    n <- getInt 1 100
+    a <- getInt 1 100
+    return (n, n, n+a)
 
 
 exercise2 :: IO ()
@@ -109,3 +120,5 @@ exercise2 = do
     test 0 10 (triangle) (genTriple) (==Rectangular)
     putStrLn "\nEquilateral test:"
     test 0 10 (triangle) (gen3Equal) (==Equilateral)
+    putStrLn "\nIsosceles test:"
+    test 0 10 (triangle) (gen2Equal) (\shape -> elem shape [Isosceles, NoTriangle])
