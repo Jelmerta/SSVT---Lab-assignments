@@ -4,7 +4,29 @@
 -- we have to check for every element e in domain S that if q(e) holds, then p(e) should also hold.
 -- If it is also the case that when p(e) holds then q(e) holds, then the two properties are equivalent.
 
-import Lab2
+-- Helper functions:
+infix 1 -->
+
+(-->) :: Bool -> Bool -> Bool
+p --> q = (not p) || q
+
+forall :: [a] -> (a -> Bool) -> Bool
+forall = flip all
+
+-- Provided functions for test properties
+stronger, weaker :: [a] -> (a -> Bool) -> (a -> Bool) -> Bool
+stronger xs p q = forall xs (\ x -> p x --> q x)
+weaker   xs p q = stronger xs q p
+
+-- To compare properties, we can make use of the following code, which will tell us if a property is stronger, weaker or equivalent
+compar :: [a] -> (a -> Bool) -> (a -> Bool) -> String
+compar xs p q = let pq = stronger xs p q
+                    qp = stronger xs q p
+                in
+                    if pq && qp then "equivalent"
+                    else if pq  then "stronger"
+                    else if qp  then "weaker"
+                    else             "incomparable"
 
 -- a) Implement all properties from the Exercise 3 from Workshop 2
 --    as Haskell functions of type Int -> Bool.
