@@ -1,3 +1,4 @@
+-- Time spent: 3 hours
 module Exercise3 where
     
 -- Testing properties strength
@@ -6,7 +7,7 @@ module Exercise3 where
 -- we have to check for every element e in domain S that if q(e) holds, then p(e) should also hold.
 -- If it is also the case that when p(e) holds then q(e) holds, then the two properties are equivalent.
 
--- Helper functions:
+----- Helper functions begin -----
 infix 1 -->
 
 (-->) :: Bool -> Bool -> Bool
@@ -21,14 +22,15 @@ stronger xs p q = forall xs (\ x -> p x --> q x)
 weaker   xs p q = stronger xs q p
 
 -- To compare properties, we can make use of the following code, which will tell us if a property is stronger, weaker or equivalent
-compar :: [a] -> (a -> Bool) -> (a -> Bool) -> String
-compar xs p q = let pq = stronger xs p q
-                    qp = stronger xs q p
-                in
-                    if pq && qp then "equivalent"
-                    else if pq  then "stronger"
-                    else if qp  then "weaker"
-                    else             "incomparable"
+    compar :: [a] -> (a -> Bool) -> (a -> Bool) -> String
+    compar xs p q = let pq = stronger xs p q
+                        qp = stronger xs q p
+                    in
+                        if pq && qp then "equivalent"
+                        else if pq  then "stronger"
+                        else if qp  then "weaker"
+                        else             "incomparable"
+----- Helper function end -----
 
                     -- a) Implement all properties from the Exercise 3 from Workshop 2
 --    as Haskell functions of type Int -> Bool.
