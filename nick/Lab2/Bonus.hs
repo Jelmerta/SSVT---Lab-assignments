@@ -37,13 +37,24 @@ fibonaccis = takeWhile (<= 4000000) (0 : 1 : zipWith (+) fibonaccis (tail fibona
 evenFibonaccis :: [Integer]
 evenFibonaccis = filter even fibonaccis
 
--- Test idea: for every number n resulting from fibonaccis, test if
--- 5*n*n+4 or 5*n*n-4 is a perfect square.
-
 -- Returns true if n is a perfect square.
---isPerfectSquare :: Integer -> Bool
---isPerfectSquare n = (toInteger (sqrt n) * toInteger (sqrt n)) == n
+-- Code from answer to
+-- https://stackoverflow.com/questions/16228542/haskell-function-to-test-if-int-is-perfect-square-using-infinite-list/16228642
+isSquare :: Integer -> Bool
+isSquare n = head (dropWhile (< n) squares) == n
+    where squares = [x*x | x <- [0..]]
 
+-- Test if all numbers n given by fibonaccis have the property that
+-- 5*n*n+4 or 5*n*n-4 is a perfect square.
+testFibonaccis :: Bool
+testFibonaccis = and [x | n <- fibonaccis, let x = isSquare (5*n*n+4) || isSquare (5*n*n-4)]
+
+-- Test if all numbers given by the evenFibonaccis are even. We would
+-- not consider this as a very good thest because the actual implementation of
+-- the evenFibonaccis function already guarantees that the numbers are even
+-- using the even function.
+testEvenFibonaccis :: Bool
+testEvenFibonaccis = all even evenFibonaccis
 
 -- Project Euler problem 357: Prime generating integers
 -- Find the sum of all positive integers n not exceeding 100 000
@@ -62,8 +73,10 @@ dndIsPrime n d = prime $ d + n `div` d
 pr :: [Integer]
 pr = [n | n <- [0..100000], all (dndIsPrime n) (divisors n)]
 
--- Test idea: for every number n in the list, check if every divisor d of n,
--- d+n/d is a prime number.
+-- For every number n in the list resulting from pr,
+-- check if every divisor d of n, d+n/d is a prime number.
+testPr :: Bool
+testPr = and [x | n <- pr, let y = divisors n, d <- y, let z = d + n `div` d, let x = prime z]
 
 -- Project Euler problem 377: Let f(n) be the sum of all positive integers
 -- that do not have a zero in their digits and have a digital sum equal to n.
@@ -113,6 +126,11 @@ bonus = do
     putStrLn "The sum of the even-valied terms in the Fibonacci sequence \
     \whose values do not exceed four million are:"
     print $ sum evenFibonaccis
+    putStrLn "Test if all numbers given by the Fibonacci function have \
+    \the property property of Fibonacci numbers (this takes a while)."
+    print testFibonaccis
+    putStrLn "Test if all numbers given by evenFibonaccis are even."
+    print evenFibonaccis
 
     putStrLn "\n--- Euler problem 357. ---"
     putStrLn "--- Find the sum of all positive integers n not exceeding \
@@ -121,6 +139,9 @@ bonus = do
     \took too long to run---"
     putStrLn "The sum is: (this takes a while)"
     print $ sum pr
+    putStrLn "For every number n in the list resulting from pr, check if \
+    \every divisor d of n, d+n/d is a prime number (this takes a while)."
+    print testPr
 
     putStrLn "\n--- Euler problem 377. ---"
     putStrLn "Let f(n) be the sum of all positive integers that do not have a \
