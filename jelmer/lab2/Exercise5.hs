@@ -1,5 +1,4 @@
 -- Recognizing and generating derangements
--- TODO Understanding what the preconditions and postconditions
 
 import Lab2
 import Test.QuickCheck
@@ -14,22 +13,42 @@ import Data.List
 -- [2,3,1],[3,1,2]
 -- To find out the derangements of a list, we can calculate all of the permutations of a list and for every index check if the result the element in the same index.
 
--- TODO We could allow for any element in the list as it does not matter much what the list contains.
+-- To check if an input list is a derangement of a target list we verify that for every index in the list, we find a different element.
+-- We stop checking when one of the lists has become empty. If only one of the target lists is empty, this means that there is a mismatch in the amount of elements and therefore this is not a derangement.
+-- If both lists and up being empty after being checked for every element being different we know that we're dealing with a derangement
+-- TODO WAIT: [1,2,3] and [4,5,6] are not derangements... What do we do then?
+-- isDerangement :: (Eq a) => [a] -> [a] -> Bool
+-- isDerangement [] [] = True
+-- isDerangement list1 [] = False
+-- isDerangement [] list2 = False
+-- isDerangement (list1Head:list1Tail) list2@(list2Head:list2Tail)
+--     | (list1Head == list2Head) || (list1Head `notElem` list2) = False
+--     | otherwise = isDerangement list1Tail list2Tail
 
--- To check if an input list is a derangement of a target list
--- TODO It does not matter the order of list in the arguments
-isDerangement :: [Integer] -> [Integer] -> Bool
+-- containsSameElements :: (Eq a) => [a] -> [a] -> Bool
+-- containsSameElements [] ys = True
+-- containsSameElements (x:xs) ys 
+--     | x `elem` ys = containsSameElements xs ys
+--     | otherwise = False
+
+index :: (Eq a) => a -> [a] -> Integer
+index e (x:xs)
+    | e == x = 0
+    | otherwise = 1 + index e xs
+
+
+isDerangement :: (Eq a) => [a] -> [a] -> Bool
 isDerangement [] [] = True
-isDerangement (list1Head:list1Tail) (list2Head:list2Tail)
-    | list1Head == list2Head = False
-    | otherwise = isDerangement list1Tail list2Tail
+-- isDerangement (x:xs) ys
+--     | x `elem` ys && (index x xs /= index x ys) = isDerangement xs (delete x ys)  -- (list1Head == list2Head) || (list1Head `notElem` list2) = False
+--     | otherwise = False
+isDerangement xs ys = [x `elem` ys && (index x xs /= index x ys) | x <- xs ]
+
 
 -- To find out the derangements of a list, we can find out the permutations and simply filter out
 -- all permutations that do not match the a derangement according to the function above
-deran :: Integer -> [[Integer]]
-deran n = filter (isDerangement [1..n-1]) (permutations [1..n-1])
-    
-
+-- deran :: Integer -> [[Integer]]
+-- deran n = filter (isDerangement [1..n-1]) (permutations [1..n-1])
 
 -- Well-chosen integer lists:
 -- []       []      True? If not, it is still useful to have it this way to make calculation easier
@@ -81,14 +100,19 @@ testIsDerangementElementPosition (x:xs) (y:ys)
 -- True
 -- checkDeranPropOutputSize [[2,3,1],[3,1,2,3]] 3
 -- False
-testDeranPropOutputSize :: Integer -> Bool
-testDeranPropOutputSize n = checkDeranPropOutputSize (deran n) (n-1)
+-- testDeranPropOutputSize :: Integer -> Bool
+-- testDeranPropOutputSize n = checkDeranPropOutputSize (deran n) (n-1)
 
-checkDeranPropOutputSize :: [[Integer]] -> Integer -> Bool
-checkDeranPropOutputSize [] n = True
-checkDeranPropOutputSize (x:xs) n
-    | n /= fromIntegral(length x) = False
-    | otherwise = checkDeranPropOutputSize xs n
+-- checkDeranPropOutputSize :: [[Integer]] -> Integer -> Bool
+-- checkDeranPropOutputSize [] n = True
+-- checkDeranPropOutputSize (x:xs) n
+--     | n /= fromIntegral(length x) = False
+--     | otherwise = checkDeranPropOutputSize xs n
 
 
 -- Property 2: Every list in the output will contain the same elements as in the input list
+
+
+exercise5 :: IO ()
+exercise5 = do
+    putStrLn "\n--- Exercise 5 ---\n\n"
