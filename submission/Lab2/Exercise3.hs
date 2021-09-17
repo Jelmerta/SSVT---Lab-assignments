@@ -4,6 +4,8 @@
 -- we have to check for every element e in domain S that if q(e) holds, then p(e) should also hold.
 -- If it is also the case that when p(e) holds then q(e) holds, then the two properties are equivalent.
 
+module Exercise3 where
+
 import Lab2
 
 -- a) Implement all properties from the Exercise 3 from Workshop 2

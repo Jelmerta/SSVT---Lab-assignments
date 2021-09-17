@@ -6,6 +6,7 @@ import Exercise5
 import Exercise6
 import Exercise7
 import Exercise8
+import Bonus
 
 main :: IO ()
 main = do
@@ -17,3 +18,4 @@ main = do
     exercise6
     exercise7
     exercise8
+    bonus
