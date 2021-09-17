@@ -1,6 +1,7 @@
 module Bonus where
 
 import Data.Char
+import Data.Scientific -- stack install scientific
 
 -- Prime function from lab1.hs.
 prime :: Integer -> Bool
@@ -12,9 +13,15 @@ primes :: [Integer]
 primes = 2 : filter prime [3..] 
 
 -- Project Euler problem 1: Multiples of 3 or 5
--- Find the sum of all the multiples of 3 or 5 below 1000.
+-- Find all the multiples of 3 or 5 below 1000.
 multiples :: [Integer]
 multiples = [x | x <- [1..1000], x `mod` 3 == 0 || x `mod` 5 == 0]
+
+-- Test idea: for every number in the result of multiples,
+-- test if the number divided by three is an integer (and not a float)
+-- or the number divided by five is an integer.
+testMultiples :: Bool
+testMultiples = and [x | y <- multiples, let x = isInteger (fromInteger (y `div` 3)) || isInteger (fromInteger (y `div` 5))]
 
 -- Project Euler problem 2: Even Fibonacci numbers
 -- By considering the terms in the Fibonacci sequence whose values do not
@@ -26,8 +33,20 @@ multiples = [x | x <- [1..1000], x `mod` 3 == 0 || x `mod` 5 == 0]
 fibonaccis :: [Integer]
 fibonaccis = takeWhile (<= 4000000) (0 : 1 : zipWith (+) fibonaccis (tail fibonaccis))
 
+-- Gives all even Fibonacci numbers to 4000000.
+evenFibonaccis :: [Integer]
+evenFibonaccis = filter even fibonaccis
+
+-- Test idea: for every number n resulting from fibonaccis, test if
+-- 5*n*n+4 or 5*n*n-4 is a perfect square.
+
+-- Returns true if n is a perfect square.
+--isPerfectSquare :: Integer -> Bool
+--isPerfectSquare n = (toInteger (sqrt n) * toInteger (sqrt n)) == n
+
+
 -- Project Euler problem 357: Prime generating integers
--- Find the sum of all positive integers n not exceeding 1000
+-- Find the sum of all positive integers n not exceeding 100 000
 -- such that for every divisor d of n, d+n/d is prime.
 
 -- Gives all divisors of integer n.
@@ -43,6 +62,9 @@ dndIsPrime n d = prime $ d + n `div` d
 pr :: [Integer]
 pr = [n | n <- [0..100000], all (dndIsPrime n) (divisors n)]
 
+-- Test idea: for every number n in the list, check if every divisor d of n,
+-- d+n/d is a prime number.
+
 -- Project Euler problem 377: Let f(n) be the sum of all positive integers
 -- that do not have a zero in their digits and have a digital sum equal to n.
 -- Find sum_0 ^17 f(13^i).
@@ -57,7 +79,7 @@ zeroInDigits :: Integer -> Bool
 zeroInDigits n = 0 `elem` digits n
 
 -- Function f as described in the problem specification.
--- The number 9999 is introduces here to stop generation of
+-- The number 9999 is introduced here to stop generation of
 -- an infinite amount of results.
 f :: Integer -> Integer
 f n = sum [x | x <- [1..9999], not (zeroInDigits x), toInteger (sum (digits x)) == n]
@@ -77,6 +99,9 @@ bonus = do
     print multiples
     putStrLn "The sum of all the multiples of 3 and 5 below 1000 is:"
     print $ sum multiples
+    putStrLn "Test if every result from the multiples function is divisible \
+    \by three or five."
+    print testMultiples
 
     putStrLn "\n--- Euler problem 2. ---"
     putStrLn "--- By considering the terms in the Fibonacci sequence whose \
@@ -84,10 +109,10 @@ bonus = do
     \the even-valued terms. ---"
     putStrLn "The even-valued terms in the Fibonacci sequence whose values \
     \do not exceed four million are:"
-    print $ filter even fibonaccis
+    print $ evenFibonaccis
     putStrLn "The sum of the even-valied terms in the Fibonacci sequence \
     \whose values do not exceed four million are:"
-    print $ sum (filter even fibonaccis)
+    print $ sum evenFibonaccis
 
     putStrLn "\n--- Euler problem 357. ---"
     putStrLn "--- Find the sum of all positive integers n not exceeding \
