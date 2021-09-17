@@ -109,7 +109,7 @@ bonus = do
     \the even-valued terms. ---"
     putStrLn "The even-valued terms in the Fibonacci sequence whose values \
     \do not exceed four million are:"
-    print $ evenFibonaccis
+    print evenFibonaccis
     putStrLn "The sum of the even-valied terms in the Fibonacci sequence \
     \whose values do not exceed four million are:"
     print $ sum evenFibonaccis
