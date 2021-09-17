@@ -32,7 +32,7 @@ weaker   xs p q = stronger xs q p
                         else             "incomparable"
 ----- Helper function end -----
 
-                    -- a) Implement all properties from the Exercise 3 from Workshop 2
+-- a) Implement all properties from the Exercise 3 from Workshop 2
 --    as Haskell functions of type Int -> Bool.
 --    Consider a small domain like [(−10)..10].
 
