@@ -1,3 +1,5 @@
+module Exercise7 where
+
 import Data.Char (digitToInt, isDigit, ord)
 import Data.Digits (unDigits)
 import Data.String

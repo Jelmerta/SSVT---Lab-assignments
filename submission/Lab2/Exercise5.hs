@@ -1,5 +1,7 @@
 -- Recognizing and generating derangements
 
+module Exercise5 where
+
 import Lab2
 import Test.QuickCheck
 import Data.List
