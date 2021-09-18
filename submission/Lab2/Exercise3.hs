@@ -30,7 +30,7 @@ compar xs p q = let pq = stronger xs p q
                     else if qp  then "weaker"
                     else             "incomparable"
 
-                    -- a) Implement all properties from the Exercise 3 from Workshop 2
+-- a) Implement all properties from the Exercise 3 from Workshop 2
 --    as Haskell functions of type Int -> Bool.
 --    Consider a small domain like [(−10)..10].
 
