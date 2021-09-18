@@ -1,3 +1,5 @@
+-- Time spent: 4 hours
+
 -- Recognizing and generating derangements
 
 module Exercise5 where
