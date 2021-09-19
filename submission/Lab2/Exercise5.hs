@@ -14,7 +14,17 @@ import Data.List
 -- but the permutation [2,1,3] for example, would have the third element in the same index, and is therefore not a derangement.
 -- The derangements of [1,2,3] would be:
 -- [2,3,1],[3,1,2]
--- To find out the derangements of a list, we can calculate all of the permutations of a list and for every index check if the result the element in the same index.
+-- To find out the derangements of a list, we can calculate all of the permutations of a list and check for every permutation if none of the elements in the same index are the same
+
+-- We can reuse the isPermutation check from ex4 to check for derangements
+isPermutation :: Eq a => [a] -> [a] -> Bool
+isPermutation [] a = null a
+isPermutation (h:t) a = isPermutation t (filter (/= h) a)
+
+-- To find out if none of the indices match, we sum the amount of times x != y for the same index, and match it with the length of one of the inputs
+-- This assumes that xs and ys have the same size
+isDerangement :: (Eq a) => [a] -> [a] -> Bool
+isDerangement xs ys = isPermutation xs ys && (foldl (+) [x /= y | (x, y) <- zip xs, ys] == length xs)
 
 -- To check if an input list is a derangement of a target list we verify that for every index in the list, we find a different element.
 -- We stop checking when one of the lists has become empty. If only one of the target lists is empty, this means that there is a mismatch in the amount of elements and therefore this is not a derangement.
