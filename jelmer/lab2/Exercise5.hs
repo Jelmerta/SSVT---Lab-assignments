@@ -1,6 +1,9 @@
+-- Time spent: 4 hours
+
 -- Recognizing and generating derangements
 
-import Lab2
+module Exercise5 where
+
 import Test.QuickCheck
 import Data.List
 

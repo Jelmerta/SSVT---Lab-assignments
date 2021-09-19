@@ -17,19 +17,20 @@ forall :: [a] -> (a -> Bool) -> Bool
 forall = flip all
 
 -- Provided functions for test properties
+-- 
 stronger, weaker :: [a] -> (a -> Bool) -> (a -> Bool) -> Bool
 stronger xs p q = forall xs (\ x -> p x --> q x)
 weaker   xs p q = stronger xs q p
 
 -- To compare properties, we can make use of the following code, which will tell us if a property is stronger, weaker or equivalent
-    compar :: [a] -> (a -> Bool) -> (a -> Bool) -> String
-    compar xs p q = let pq = stronger xs p q
-                        qp = stronger xs q p
-                    in
-                        if pq && qp then "equivalent"
-                        else if pq  then "stronger"
-                        else if qp  then "weaker"
-                        else             "incomparable"
+compar :: [a] -> (a -> Bool) -> (a -> Bool) -> String
+compar xs p q = let pq = stronger xs p q
+                    qp = stronger xs q p
+                in
+                    if pq && qp then "equivalent"
+                    else if pq  then "stronger"
+                    else if qp  then "weaker"
+                    else             "incomparable"
 ----- Helper function end -----
 
 -- a) Implement all properties from the Exercise 3 from Workshop 2
@@ -57,20 +58,19 @@ exercise3 = do
     putStrLn "\n--- Exercise 3 ---\n\n"
     putStrLn "W2EX3.1: Comparison of the function evenAndGreaterThan3 (even n && (n > 3)) with the function even in the range of [-10..10] tells us that evenAndGreaterThan3 is:"
     print (compar [-10..10] evenAndGreaterThan3 even)
-    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even]"
-    putStrLn ""
+    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even]\n"
 
     putStrLn "W2EX3.2: Comparison of the function evenOrGreaterOr3 (even n || (n > 3)) with the function even in the range of [-10..10] tells us that evenOrGreaterThan3 is:"
     print (compar [-10..10] evenOrGreaterThan3 even)
-    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even, evenOrGreaterOr3]"
-    putStrLn ""
+    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even, evenOrGreaterOr3] \n"
 
     putStrLn "W2EX3.3: Comparison of the function evenAndGreaterThan3OrEven (evenAndGreaterThan3 n || even n) with the function even in the range of [-10..10] tells us that evenAndGreaterThan3OrEven is:"
     print (compar [-10..10] evenAndGreaterThan3OrEven even)
-    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even, evenAndGreaterThan3OrEven, evenOrGreaterOr3], evenAndGreaterThan3OrEven and even being equivalent"
-    putStrLn ""
+    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even, evenAndGreaterThan3OrEven, evenOrGreaterOr3], evenAndGreaterThan3OrEven and even being equivalent\n"
 
     putStrLn "W2EX3.4: Comparison of the function even with the function evenAndGreaterThan3OrEven (evenAndGreaterThan3 n || even n) in the range of [-10..10] tells us that even is:"
     print (compar [-10..10] even evenAndGreaterThan3OrEven)
-    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even, evenAndGreaterThan3OrEven, evenOrGreaterOr3], evenAndGreaterThan3OrEven and even being equivalent"
-    putStrLn ""
+    putStrLn "WeputStrLn "" now know that order of strength for the properties is [evenAndGreaterThan3, even, evenAndGreaterThan3OrEven, evenOrGreaterOr3], evenAndGreaterThan3OrEven and even being equivalent\n"
+
+
+    -- TODO Insertion sort and print list of function names
