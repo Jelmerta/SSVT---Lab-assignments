@@ -1,5 +1,7 @@
--- Time spent: 3 hours
+-- Time spent: 3.5 hours
 module Exercise3 where
+
+import Data.List
     
 -- Testing properties strength
 -- In this exercise we will compare the strength of different properties.
@@ -16,8 +18,7 @@ p --> q = (not p) || q
 forall :: [a] -> (a -> Bool) -> Bool
 forall = flip all
 
--- Provided functions for test properties
--- 
+-- Provided functions for testing property strength
 stronger, weaker :: [a] -> (a -> Bool) -> (a -> Bool) -> Bool
 stronger xs p q = forall xs (\ x -> p x --> q x)
 weaker   xs p q = stronger xs q p
@@ -37,40 +38,42 @@ compar xs p q = let pq = stronger xs p q
 --    as Haskell functions of type Int -> Bool.
 --    Consider a small domain like [(−10)..10].
 
--- Property 1
-evenAndGreaterThan3 :: Integer -> Bool
-evenAndGreaterThan3 n = even n && (n > 3)
+-- All four properties have the same definition:
+prop_evenAndGreaterThan3, prop_even, prop_evenOrGreaterThan3, prop_evenAndGreaterThan3OrEven :: Integer -> Bool
+-- Implementations of the different properties:
+prop_evenAndGreaterThan3 n = even n && (n > 3)
+prop_even = even
+prop_evenOrGreaterThan3 n = even n || (n > 3)
+prop_evenAndGreaterThan3OrEven n = prop_evenAndGreaterThan3 n || even n -- This has the same effect as simply checking even
 
--- Property 2
--- The even property is part of the Prelude library. It could simply be implemented as x `mod` 2 == 0
+-- We can define a function that provides us with an ordering when two functions with the same definition are provided in the given domain
+-- Note: properties may be incomparable
+propertySort :: String -> String -> Ordering
+propertySort prop1 prop2
+    | compar [-10..10] (findPropFromName prop1) (findPropFromName prop2) == "stronger" = LT
+    | otherwise = GT
+    -- If compar of two properties is equal, it does not matter if GT or LT is reached, as the property will be on one side of the other property.
+    -- This does not account for incomparable. It would probably be better if the property would not be added to the sorting, or perhaps just fail completely.
+    -- This does not matter in this exercise as the properties are comparable here.
 
--- Property 3
-evenOrGreaterThan3 :: Integer -> Bool
-evenOrGreaterThan3 n = even n || (n > 3)
+-- Sadly we can't simply print function names with type (Integer -> Bool), so we have to be clever and first find the right function to be able to sort the properties
+-- To make sure we order on the property, this also has the effect of executing the function here
+findPropFromName :: String -> (Integer -> Bool)
+findPropFromName property
+    | property == "prop_evenAndGreaterThan3" = prop_evenAndGreaterThan3
+    | property == "prop_even" = prop_even
+    | property == "prop_evenOrGreaterThan3" = prop_evenOrGreaterThan3
+    | property == "prop_evenAndGreaterThan3OrEven" = prop_evenAndGreaterThan3OrEven
 
--- Property 4: This has the same effect as simply checking even, but just to be very explicit:
-evenAndGreaterThan3OrEven :: Integer -> Bool
-evenAndGreaterThan3OrEven n = evenAndGreaterThan3 n || even n
+-- To sort all the properties, we simply sort all the defined properties using the propertySort function (after finding the actual definition of the property)
+sortAllPropertiesByStrength :: [String] -> [String]
+sortAllPropertiesByStrength = sortBy propertySort
 
 exercise3 :: IO ()
 exercise3 = do
     -- b) Provide a descending strength list of all the implemented properties.
+    -- We do this by calling the provided functions above.
     putStrLn "\n--- Exercise 3 ---\n\n"
-    putStrLn "W2EX3.1: Comparison of the function evenAndGreaterThan3 (even n && (n > 3)) with the function even in the range of [-10..10] tells us that evenAndGreaterThan3 is:"
-    print (compar [-10..10] evenAndGreaterThan3 even)
-    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even]\n"
-
-    putStrLn "W2EX3.2: Comparison of the function evenOrGreaterOr3 (even n || (n > 3)) with the function even in the range of [-10..10] tells us that evenOrGreaterThan3 is:"
-    print (compar [-10..10] evenOrGreaterThan3 even)
-    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even, evenOrGreaterOr3] \n"
-
-    putStrLn "W2EX3.3: Comparison of the function evenAndGreaterThan3OrEven (evenAndGreaterThan3 n || even n) with the function even in the range of [-10..10] tells us that evenAndGreaterThan3OrEven is:"
-    print (compar [-10..10] evenAndGreaterThan3OrEven even)
-    putStrLn "We now know that order of strength for the properties is [evenAndGreaterThan3, even, evenAndGreaterThan3OrEven, evenOrGreaterOr3], evenAndGreaterThan3OrEven and even being equivalent\n"
-
-    putStrLn "W2EX3.4: Comparison of the function even with the function evenAndGreaterThan3OrEven (evenAndGreaterThan3 n || even n) in the range of [-10..10] tells us that even is:"
-    print (compar [-10..10] even evenAndGreaterThan3OrEven)
-    putStrLn "WeputStrLn "" now know that order of strength for the properties is [evenAndGreaterThan3, even, evenAndGreaterThan3OrEven, evenOrGreaterOr3], evenAndGreaterThan3OrEven and even being equivalent\n"
-
-
-    -- TODO Insertion sort and print list of function names
+    putStrLn "Ordering the properties prop_evenAndGreaterThan3, prop_even, prop_evenOrGreaterThan3 and prop_evenAndGreaterThan3OrEven by strength\n"
+    putStrLn "Strongest properties are shown first:\n"
+    print (sortAllPropertiesByStrength ["prop_evenAndGreaterThan3", "prop_even", "prop_evenOrGreaterThan3", "prop_evenAndGreaterThan3OrEven"])
