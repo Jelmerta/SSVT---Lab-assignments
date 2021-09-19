@@ -1,3 +1,8 @@
+-- Time spent on exercise: 3 hours.
+
+-- This submission requires Data.Scientific to be installed
+-- using stack install scientific.
+
 module Bonus where
 
 import Data.Char
