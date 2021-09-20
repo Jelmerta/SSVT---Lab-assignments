@@ -37,8 +37,11 @@ deran n = filter (isDerangement [1..n-1]) (permutations [1..n-1])
 
 -- Using ==> instead of --> for testing to make sure QuickCheck performs 100 checks for cases where the premise is true
 -- Property 1: The lengths of both input and target list need to be equal for them to be derangements
+testIsDerangementLengthPropertynonqc :: [Integer] -> [Integer] -> Bool
+testIsDerangementLengthPropertynonqc xs ys = length xs == length ys
+
 testIsDerangementLengthProperty :: [Integer] -> [Integer] -> Property
-testIsDerangementLengthProperty xs ys = isDerangement xs ys ==> length xs == length ys
+testIsDerangementLengthProperty = isDerangement ==> testIsDerangementLengthPropertynonqc
 
 -- Property 2: If list a is a derangement of list b, neither will have duplicate elements
 testIsDerangementNoDuplicates :: [Integer] -> [Integer] -> Property
