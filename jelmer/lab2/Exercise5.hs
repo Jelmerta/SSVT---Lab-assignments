@@ -84,7 +84,7 @@ inputs = [[], [1], [1,2], [2,1], [2,3]]
 randomInput :: Gen [Integer]
 randomInput = elements inputs
 
-
+-- To compare the strengths, we reuse the code from the lab/ex3, but with some variations to work with functions with two list inputs.
 infix 1 -->
 
 (-->) :: Bool -> Bool -> Bool
