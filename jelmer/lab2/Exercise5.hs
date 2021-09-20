@@ -7,13 +7,6 @@ module Exercise5 where
 import Test.QuickCheck
 import Data.List
 
------ Helper functions begin -----
-infix 1 -->
-
-(-->) :: Bool -> Bool -> Bool
-p --> q = (not p) || q
------ Helper functions end -----
-
 -- Derangements are defined as all of the permutations of a list of elements, such that
 -- no element in the permutation remains in the same index.
 -- For example: For the list of elements [1,2,3], all of the permutations would be:
@@ -59,7 +52,8 @@ testIsDerangementContainsSameElements xs ys = isDerangement xs ys ==> (sum [from
 testIsDerangementPermutation :: [Integer] -> [Integer] -> Property
 testIsDerangementPermutation xs ys = isDerangement xs ys ==> isPermutation xs ys
 
--- Well-chosen integer lists for testing:
+-- We define a well-chosen domain for testing, some of which would contradict these properties.
+-- All combinations of the inputs as input and target lists can be generated.
 -- []       []      True
 -- [1]      []      False
 -- []       [1]     False
@@ -72,17 +66,32 @@ testIsDerangementPermutation xs ys = isDerangement xs ys ==> isPermutation xs ys
 -- [1,2]    [2,3]   False
 -- [2,3]    [1,2]   False
 
--- Sadly, we do not know how to make a generator out of this, or something similar.
+inputs :: [[Integer]]
+inputs = [[], [1], [1,2], [2,1], [2,3]]
+
+randomInput :: Gen [Integer]
+randomInput = elements inputs
+
 exercise5 :: IO ()
 exercise5 = do
     putStrLn "\n--- Exercise 5 ---\n\n"
     putStrLn "Testing the various properties...:\n"
-    putStrLn "Testing property 1: Length:\n"
-    quickCheck testIsDerangementLengthProperty
-    putStrLn "Testing property 2: no duplicates:\n"
-    quickCheck testIsDerangementNoDuplicates
-    putStrLn "Testing property 3: containing same elements:\n"
-    quickCheck testIsDerangementContainsSameElements
-    putStrLn "Testing property 4: is permutation:\n"
-    quickCheck testIsDerangementPermutation
-    putStrLn "None of the tests fail, but we also do not have enough positive cases to verify the properties hold."
+    putStrLn "To make sure we use random values for both the input as the target, we make sure to call randomInput separately for both input and target.\n"
+    putStrLn "Note: \"quickCheck $\" can be replaced in the code with \"quickCheck . verbose $\" to verify individual test cases\n"
+    
+    putStrLn "Testing property 1: Length:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> testIsDerangementLengthProperty input target
+
+    putStrLn "\nTesting property 2: no duplicates:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> testIsDerangementNoDuplicates input target
+    
+    putStrLn "\nTesting property 3: containing same elements:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> testIsDerangementContainsSameElements input target
+
+    putStrLn "\nTesting property 4: is permutation:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> testIsDerangementPermutation input target
+
+    putStrLn "\n\nNone of the tests fail, which gives us some confidence that the properties hold. More test cases and properties may be added to increase confidence, at the cost of more code maintenance.\n\n"
+
+    putStrLn "To test the strength of the properties, we may reuse our thoughts and code from exercise 3 to order the properties for the domain given."
+    putStrLn "Sadly, this is not easily usable with the way the properties are defined right now using the quickCheck properties and requires some changes."
