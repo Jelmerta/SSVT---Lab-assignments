@@ -1,7 +1,7 @@
 module Exercise7 where
 
 import Data.Char (digitToInt, isDigit, ord)
-import Data.Digits (unDigits)
+import Data.Digits (unDigits) -- This requires library Data.Digits (this can be installed using stack install digits)
 import Data.String
 
 -- Checks if an IBAN number is correct by the rules of https://en.wikipedia.org/wiki/International_Bank_Account_Number.
