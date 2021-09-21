@@ -4,7 +4,7 @@ import Exercise3
 import Exercise4
 import Exercise5
 import Exercise6
---import Exercise7
+import Exercise7
 import Bonus
 
 -- The following packages are required to run main and all of the exercises
@@ -19,5 +19,5 @@ main = do
     exercise4
     exercise5
     exercise6
-    --exercise7
+    exercise7
     bonus
