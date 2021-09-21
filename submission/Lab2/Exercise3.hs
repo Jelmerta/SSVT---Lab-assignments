@@ -77,3 +77,4 @@ exercise3 = do
     putStrLn "Ordering the properties prop_evenAndGreaterThan3, prop_even, prop_evenOrGreaterThan3 and prop_evenAndGreaterThan3OrEven by strength\n"
     putStrLn "Strongest properties are shown first:\n"
     print (sortAllPropertiesByStrength ["prop_evenAndGreaterThan3", "prop_even", "prop_evenOrGreaterThan3", "prop_evenAndGreaterThan3OrEven"])
+    putStrLn ""

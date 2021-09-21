@@ -109,8 +109,7 @@ find = sum $ map (f 13^) [1..17]
 -- Main function to start the exercise code.
 bonus :: IO ()
 bonus = do
-    putStrLn "--- Bonus assignments: Project Euler ---"
-
+    putStrLn "\n--- Bonus assignments: Project Euler ---\n"
     putStrLn "\n--- Euler problem 1. ---\n"
     putStrLn "--- Find the sum of all the multiples of 3 or 5 below 1000. ---"
     putStrLn "All the multiples of 3 and 5 below 1000 are:"

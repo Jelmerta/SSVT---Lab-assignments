@@ -93,3 +93,4 @@ exercise4 = do
     test 0 100 isPermutation oneEmpty (==False)
     putStrLn "\nDifferent lengths test:"
     test 0 100 isPermutation differentLength (==False)
+    putStrLn "" 

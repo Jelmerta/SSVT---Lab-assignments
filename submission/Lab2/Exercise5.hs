@@ -133,7 +133,7 @@ sortAllPropertiesByStrength = sortBy propertySort
 
 exercise5 :: IO ()
 exercise5 = do
-    putStrLn "\n--- Exercise 5 ---\n\n"
+    putStrLn "\n--- Exercise 5 ---\n"
     putStrLn "Testing the various properties...:\n"
     putStrLn "To make sure we use random values for both the input as the target, we make sure to call randomInput separately for both input and target.\n"
     putStrLn "Note: \"quickCheck $\" can be replaced in the code with \"quickCheck . verbose $\" to verify individual test cases\n"
@@ -158,3 +158,4 @@ exercise5 = do
     putStrLn "Taking the inputs and targets [[], [1], [1,2], [2,1], [2,3]] leads to the sorting of the properties in the following order:"
     print (sortAllPropertiesByStrength ["testIsDerangementLengthProperty", "testIsDerangementNoDuplicates", "testIsDerangementContainsSameElements", "testIsDerangementPermutation"])
     putStrLn "Based purely on intuition, this does sound correct, as being a permutation is somewhat strict: it entails length and same elements."
+    putStrLn ""

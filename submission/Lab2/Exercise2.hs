@@ -122,3 +122,4 @@ exercise2 = do
     test 0 10 (triangle) (gen3Equal) (==Equilateral)
     putStrLn "\nIsosceles test:"
     test 0 10 (triangle) (gen2Equal) (\shape -> elem shape [Isosceles, NoTriangle])
+    putStrLn ""
