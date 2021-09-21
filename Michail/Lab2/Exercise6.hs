@@ -1,5 +1,7 @@
 module Exercise6 where
 
+-- Time spent: 1 hour 
+
 -- The ROT13 is a simpler version of the Ceasars Cipher
 -- It moves every letter character of a string by 13 places
 -- It is also its own inverse (encoder & decoder) as ROT13(ROT13 "id") = "id"

@@ -1,3 +1,4 @@
+-- Time spent : 1 hour
 module Exercise6 where
 
 -- The ROT13 is a simpler version of the Ceasars Cipher

@@ -84,7 +84,7 @@ differentLength a b = length a /= length b
 -- have been encountered.
 exercise4 :: IO ()
 exercise4 = do
-    putStrLn "--- Exercise 4 ---\n"
+    putStrLn "\n--- Exercise 4 ---\n"
     putStrLn "Both lists empty test:"
     test 0 100 isPermutation bothEmpty (==True)
     putStrLn "\nBoth lists same test:"
