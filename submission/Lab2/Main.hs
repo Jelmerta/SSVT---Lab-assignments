@@ -7,6 +7,10 @@ import Exercise6
 import Exercise7
 import Bonus
 
+-- The following packages are required to run main and all of the exercises
+-- - Data.digits (this can be installed using stack install digits)
+-- - Data.Scientific (this can be installed using stack install scientific)
+
 main :: IO ()
 main = do
     exercise1
