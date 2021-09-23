@@ -47,3 +47,4 @@ exercise4 = do
     putStrLn "\n--- Exercise 4 ---\n"
     putStrLn "Test equivalence of 1314 original forms and their corresponding CNF forms:\n"
     print (testEquivForms generateForms)
+    putStrLn ""

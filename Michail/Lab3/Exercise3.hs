@@ -64,6 +64,16 @@ nnf (Neg (Cnj fs)) = Dsj (map (nnf.Neg) fs)
 nnf (Neg (Dsj fs)) = Cnj (map (nnf.Neg) fs)
 -}
 
+---- Step 3: Distribute Dsj and Cnj to CNF form
+------ 
+------ Preconditions:
+-------- Arrowfree  and nnf input formula
+------ Postconditionsc (To test):
+-------- only conjuctions for the exterior 
+-------- logically equivalent to input formula
+
+
+
 -- Convert form to CNF form
 -- Preconditions 
 ---- Valid Form : checked by type inference
