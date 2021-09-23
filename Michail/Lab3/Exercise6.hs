@@ -2,7 +2,6 @@ module Exercise6 where
 
 import Data.List
 import Lecture3
-import Exercise3
 
 type Clause  = [Int]
 type Clauses = [Clause]
@@ -17,7 +16,7 @@ cnf2cls (Dsj fs) = [concat (foldMap cnf2cls fs)]
 cnf2cls (Cnj fs) = foldMap cnf2cls fs
 form11 = Cnj[Dsj[Neg p,q],q]
 
-draw = cnf2cls (Cnj[Dsj[Neg p,q],q])
+draw = cnf2cls (Cnj [(Dsj [p, q]), (Dsj [Neg p, q]), (Dsj [q, Neg q])])
 
 -- Postcondition:
 ---- The properties of CNF form should be the same as the properties after the function

@@ -5,7 +5,7 @@ import SetOrd
 import Data.List
 import Exercise1
 import Exercise2
-import Data.Bool (Bool(True))
+
 -- 2 hours
 -- Write a Haskell program for converting formulas into CNF.
 
@@ -65,7 +65,13 @@ nnf (Neg (Dsj fs)) = Cnj (map (nnf.Neg) fs)
 -}
 
 ---- Step 3: Distribute Dsj and Cnj to CNF form
------- 
+------ Distributive law for a Disjunction: A V (B ^ C) <--> (A V B) ^ (A V C)
+{-
+applydld :: Form -> Form
+applydld (Prop x) = Prop x
+applydld (Neg (Prop x)) = Neg (Prop x)
+convertToCnf (Neg (Neg f)) = convertToCnf f
+-}
 ------ Preconditions:
 -------- Arrowfree  and nnf input formula
 ------ Postconditionsc (To test):

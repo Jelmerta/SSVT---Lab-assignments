@@ -3,16 +3,8 @@ module Exercise5 where
 -- Consider the following implementation of a function sub::Form->Set Form that finds 
 -- all the sub-formulae of a given formula.
 import SetOrd
+import Lecture3
 
-type Name = Int
-
-data Form = Prop Name
-          | Neg  Form
-          | Cnj [Form]
-          | Dsj [Form]
-          | Impl Form Form
-          | Equiv Form Form
-          deriving (Eq,Ord)
 
 sub :: Form -> Set Form
 sub (Prop x) = Set [Prop x]
