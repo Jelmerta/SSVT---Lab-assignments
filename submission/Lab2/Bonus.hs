@@ -109,9 +109,8 @@ find = sum $ map (f 13^) [1..17]
 -- Main function to start the exercise code.
 bonus :: IO ()
 bonus = do
-    putStrLn "--- Bonus assignments: Project Euler ---"
-
-    putStrLn "\n--- Euler problem 1. ---"
+    putStrLn "\n--- Bonus assignments: Project Euler ---\n"
+    putStrLn "\n--- Euler problem 1. ---\n"
     putStrLn "--- Find the sum of all the multiples of 3 or 5 below 1000. ---"
     putStrLn "All the multiples of 3 and 5 below 1000 are:"
     print multiples
@@ -121,7 +120,7 @@ bonus = do
     \by three or five."
     print testMultiples
 
-    putStrLn "\n--- Euler problem 2. ---"
+    putStrLn "\n--- Euler problem 2. ---\n"
     putStrLn "--- By considering the terms in the Fibonacci sequence whose \
     \values do not exceed four million, find the sum of \
     \the even-valued terms. ---"
@@ -137,7 +136,7 @@ bonus = do
     putStrLn "Test if all numbers given by evenFibonaccis are even."
     print evenFibonaccis
 
-    putStrLn "\n--- Euler problem 357. ---"
+    putStrLn "\n--- Euler problem 357. ---\n"
     putStrLn "--- Find the sum of all positive integers n not exceeding \
     \100 0000 such that for every divisor d of n, d+n/d is prime. The original \
     \problem asked for numbers up to 100 000 000 but this \
@@ -148,7 +147,7 @@ bonus = do
     \every divisor d of n, d+n/d is a prime number (this takes a while)."
     print testPr
 
-    putStrLn "\n--- Euler problem 377. ---"
+    putStrLn "\n--- Euler problem 377. ---\n"
     putStrLn "Let f(n) be the sum of all positive integers that do not have a \
     \zero in their digits and have a digital sum equal to n.\n\
     \Find sum_0 ^17 f(13^i)."

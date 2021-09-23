@@ -1,7 +1,7 @@
 module Exercise7 where
 
 import Data.Char (digitToInt, isDigit, ord)
-import Data.Digits (unDigits)
+import Data.Digits (unDigits) -- This requires library Data.Digits (this can be installed using stack install digits)
 import Data.String
 
 -- Checks if an IBAN number is correct by the rules of https://en.wikipedia.org/wiki/International_Bank_Account_Number.
@@ -120,9 +120,10 @@ ibanCountryLength country
    | country == "CH" = 21
    | otherwise = -1
 
+
 exercise7 :: IO ()
 exercise7 = do
-    putStrLn "--- Exercise 7: Implementing and testing IBAN validation ---"
+    putStrLn "\n--- Exercise 7: Implementing and testing IBAN validation ---\n"
 
     putStrLn "The inital plan was to test the IBAN validator by generating \
     \random correct and incorrect IBAN numbers by running the IBAN validator \
@@ -153,3 +154,4 @@ exercise7 = do
     print $ iban "GB96BARC202015300934591"
     print $ iban "GB02BARC2020153009345"
     print $ iban "US64SVBKUS6S3300958879"
+    putStrLn ""

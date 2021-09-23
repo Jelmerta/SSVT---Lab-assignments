@@ -1,6 +1,9 @@
+-- Time spent: 4 hours
+
 -- Recognizing and generating derangements
 
-import Lab2
+module Exercise5 where
+
 import Test.QuickCheck
 import Data.List
 
@@ -11,47 +14,59 @@ import Data.List
 -- but the permutation [2,1,3] for example, would have the third element in the same index, and is therefore not a derangement.
 -- The derangements of [1,2,3] would be:
 -- [2,3,1],[3,1,2]
--- To find out the derangements of a list, we can calculate all of the permutations of a list and for every index check if the result the element in the same index.
+-- To find out the derangements of a list, we can calculate all of the permutations of a list and check for every permutation if none of the elements in the same index are the same
+
+-- We can reuse the isPermutation check from ex4 to check for derangements
+isPermutation :: Eq a => [a] -> [a] -> Bool
+isPermutation [] a = null a
+isPermutation (h:t) a = isPermutation t (filter (/= h) a)
 
 -- To check if an input list is a derangement of a target list we verify that for every index in the list, we find a different element.
--- We stop checking when one of the lists has become empty. If only one of the target lists is empty, this means that there is a mismatch in the amount of elements and therefore this is not a derangement.
--- If both lists and up being empty after being checked for every element being different we know that we're dealing with a derangement
--- TODO WAIT: [1,2,3] and [4,5,6] are not derangements... What do we do then?
--- isDerangement :: (Eq a) => [a] -> [a] -> Bool
--- isDerangement [] [] = True
--- isDerangement list1 [] = False
--- isDerangement [] list2 = False
--- isDerangement (list1Head:list1Tail) list2@(list2Head:list2Tail)
---     | (list1Head == list2Head) || (list1Head `notElem` list2) = False
---     | otherwise = isDerangement list1Tail list2Tail
-
--- containsSameElements :: (Eq a) => [a] -> [a] -> Bool
--- containsSameElements [] ys = True
--- containsSameElements (x:xs) ys 
---     | x `elem` ys = containsSameElements xs ys
---     | otherwise = False
-
-index :: (Eq a) => a -> [a] -> Integer
-index e (x:xs)
-    | e == x = 0
-    | otherwise = 1 + index e xs
-
-
+-- To find out if none of the indices match, we sum the amount of times x != y for the same index, and match it with the length of one of the inputs
+-- This assumes that xs and ys have the same size
 isDerangement :: (Eq a) => [a] -> [a] -> Bool
-isDerangement [] [] = True
--- isDerangement (x:xs) ys
---     | x `elem` ys && (index x xs /= index x ys) = isDerangement xs (delete x ys)  -- (list1Head == list2Head) || (list1Head `notElem` list2) = False
---     | otherwise = False
-isDerangement xs ys = [x `elem` ys && (index x xs /= index x ys) | x <- xs ]
-
+isDerangement xs ys = isPermutation xs ys && ((sum [fromEnum (x /= y) | (x, y) <- zip xs ys]) == length xs)
 
 -- To find out the derangements of a list, we can find out the permutations and simply filter out
 -- all permutations that do not match the a derangement according to the function above
--- deran :: Integer -> [[Integer]]
--- deran n = filter (isDerangement [1..n-1]) (permutations [1..n-1])
+deran :: Integer -> [[Integer]]
+deran n = filter (isDerangement [1..n-1]) (permutations [1..n-1])
 
--- Well-chosen integer lists:
--- []       []      True? If not, it is still useful to have it this way to make calculation easier
+
+-- Testing isDerangement:
+
+-- Using ==> instead of --> for testing to make sure QuickCheck performs 100 checks for cases where the premise is true
+-- Property 1: The lengths of both input and target list need to be equal for them to be derangements
+testIsDerangementLengthProperty :: [Integer] -> [Integer] -> Bool
+testIsDerangementLengthProperty xs ys = length xs == length ys
+
+prop_derangementLength :: [Integer] -> [Integer] -> Property
+prop_derangementLength xs ys = isDerangement xs ys ==> testIsDerangementLengthProperty xs ys
+
+-- Property 2: If list a is a derangement of list b, neither will have duplicate elements
+testIsDerangementNoDuplicates :: [Integer] -> [Integer] -> Bool
+testIsDerangementNoDuplicates xs ys = (length (nub xs) == length xs) && (length (nub ys) == length ys)
+
+prop_derangementNoDuplicates :: [Integer] -> [Integer] -> Property
+prop_derangementNoDuplicates xs ys = isDerangement xs ys ==> testIsDerangementNoDuplicates xs ys
+
+-- Property 3: Elements in the derangements are also in the original
+testIsDerangementContainsSameElements :: [Integer] -> [Integer] -> Bool
+testIsDerangementContainsSameElements xs ys = (sum [fromEnum(x `elem` ys) | x <- xs]) == length xs
+
+prop_derangementContainsSameElements :: [Integer] -> [Integer] -> Property
+prop_derangementContainsSameElements xs ys = isDerangement xs ys ==> testIsDerangementContainsSameElements xs ys
+
+-- Property 4: Derangements are permutations of each other
+testIsDerangementPermutation :: [Integer] -> [Integer] -> Bool
+testIsDerangementPermutation = isPermutation
+
+prop_derangementPermutation :: [Integer] -> [Integer] -> Property
+prop_derangementPermutation xs ys = isDerangement xs ys ==> testIsDerangementPermutation xs ys
+
+-- We define a well-chosen domain for testing, some of which would contradict these properties.
+-- All combinations of the inputs as input and target lists can be generated.
+-- []       []      True
 -- [1]      []      False
 -- []       [1]     False
 -- [1]      [1]     False
@@ -63,56 +78,82 @@ isDerangement xs ys = [x `elem` ys && (index x xs /= index x ys) | x <- xs ]
 -- [1,2]    [2,3]   False
 -- [2,3]    [1,2]   False
 
--- Testing isDerangement:
+inputs :: [[Integer]]
+inputs = [[], [1], [1,2], [2,1], [2,3]]
 
--- Property 1: If length of list1 does not match length of list 2, it is not a derangement... Exception for empty list?
--- TODO Maybe more mathematical
-testIsDerangementLengthProperty :: [Integer] -> [Integer] -> Bool
-testIsDerangementLengthProperty list1 list2 = length list1 == length list2
+randomInput :: Gen [Integer]
+randomInput = elements inputs
 
--- Property 2: If element TODO This implies the length of the list as well
-testIsDerangementContainsSameElements :: [Integer] -> [Integer] -> Bool
-testIsDerangementContainsSameElements [] [] = True
-testIsDerangementContainsSameElements [] ys = False
-testIsDerangementContainsSameElements xs [] = False
-testIsDerangementContainsSameElements (x:xs) ys
-    | x `elem` ys = testIsDerangementContainsSameElements xs (delete x ys)
-    | otherwise = False
+-- To compare the strengths, we reuse the code from the lab/ex3, but with some variations to work with functions with two list inputs.
+infix 1 -->
 
--- Property 3: Positions of elements in list 1 do not match the position of elements in list 2
-testIsDerangementElementPosition :: [Integer] -> [Integer] -> Bool
-testIsDerangementElementPosition [] [] = True
-testIsDerangementElementPosition xs [] = False -- I'm kind of testing more than required: Now we're also making sure the length of the lists match... Probably should not do that, though we need some stopping condition
-testIsDerangementElementPosition [] ys = False
-testIsDerangementElementPosition (x:xs) (y:ys)
-    | x == y = False
-    | otherwise = testIsDerangementElementPosition xs ys
+(-->) :: Bool -> Bool -> Bool
+p --> q = (not p) || q
 
+forall :: [a] -> (a -> Bool) -> Bool
+forall = flip all
 
--- Things I can think of:
--- Every element in the output list is unique (is this necessarily the case? We don't filter out duplicates). This is probably true, but should also hold for the precondition. As we currently only generate numbers from 1..n-1 this is not a problem.
--- We can recheck using the isDerangement function, though that basically just tests our code. Is a very strong property...
+-- Provided functions for testing property strength
+stronger, weaker :: [a] -> [a] -> (a -> a -> Bool) -> (a -> a -> Bool) -> Bool
+stronger xs ys p q = forall xs (\ x -> forall ys (\ y -> p x y --> q x y))
+weaker   xs ys p q = stronger xs ys q p
 
+-- To compare properties, we can make use of the following code, which will tell us if a property is stronger, weaker or equivalent
+compar :: [a] -> [a] -> (a -> a -> Bool) -> (a -> a -> Bool) -> String
+compar xs ys p q = let pq = stronger xs ys p q
+                       qp = stronger xs ys q p
+                in
+                    if pq && qp then "equivalent"
+                    else if pq  then "stronger"
+                    else if qp  then "weaker"
+                    else             "incomparable"
 
--- Every list in the output will have the same size
--- Checking the output list size:
--- checkDeranPropOutputSize [[2,3,1],[3,1,2]] 3
--- True
--- checkDeranPropOutputSize [[2,3,1],[3,1,2,3]] 3
--- False
--- testDeranPropOutputSize :: Integer -> Bool
--- testDeranPropOutputSize n = checkDeranPropOutputSize (deran n) (n-1)
+propertySort :: String -> String -> Ordering
+propertySort prop1 prop2
+    | compar [[], [1], [1,2], [2,1], [2,3]] [[], [1], [1,2], [2,1], [2,3]] (findPropFromName prop1) (findPropFromName prop2) == "stronger" = LT
+    | otherwise = GT
+    -- If compar of two properties is equal, it does not matter if GT or LT is reached, as the property will be on one side of the other property.
+    -- This does not account for incomparable. It would probably be better if the property would not be added to the sorting, or perhaps just fail completely.
+    -- This does not matter in this exercise as the properties are comparable here.
 
--- checkDeranPropOutputSize :: [[Integer]] -> Integer -> Bool
--- checkDeranPropOutputSize [] n = True
--- checkDeranPropOutputSize (x:xs) n
---     | n /= fromIntegral(length x) = False
---     | otherwise = checkDeranPropOutputSize xs n
+-- Sadly we can't simply print function names with type (Integer -> Bool), so we have to be clever and first find the right function to be able to sort the properties
+-- To make sure we order on the property, this also has the effect of executing the function here
+findPropFromName :: String -> ([Integer] -> [Integer] -> Bool)
+findPropFromName property
+    | property == "testIsDerangementLengthProperty" = testIsDerangementLengthProperty
+    | property == "testIsDerangementNoDuplicates" = testIsDerangementNoDuplicates
+    | property == "testIsDerangementContainsSameElements" = testIsDerangementContainsSameElements
+    | property == "testIsDerangementPermutation" = testIsDerangementPermutation
 
-
--- Property 2: Every list in the output will contain the same elements as in the input list
+-- To sort all the properties, we simply sort all the defined properties using the propertySort function (after finding the actual definition of the property)
+sortAllPropertiesByStrength :: [String] -> [String]
+sortAllPropertiesByStrength = sortBy propertySort
 
 
 exercise5 :: IO ()
 exercise5 = do
     putStrLn "\n--- Exercise 5 ---\n\n"
+    putStrLn "Testing the various properties...:\n"
+    putStrLn "To make sure we use random values for both the input as the target, we make sure to call randomInput separately for both input and target.\n"
+    putStrLn "Note: \"quickCheck $\" can be replaced in the code with \"quickCheck . verbose $\" to verify individual test cases\n"
+    
+    putStrLn "Testing property 1: Length:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementLength input target
+
+    putStrLn "\nTesting property 2: no duplicates:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementNoDuplicates input target
+    
+    putStrLn "\nTesting property 3: containing same elements:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementContainsSameElements input target
+
+    putStrLn "\nTesting property 4: is permutation:"
+    quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementPermutation input target
+
+    putStrLn "\n\nNone of the tests fail, which gives us some confidence that the properties hold. More test cases and properties may be added to increase confidence, at the cost of more code maintenance.\n\n"
+
+    putStrLn "To test the strength of the properties, we may reuse our thoughts and code from exercise 3 to order the properties for the domain given."
+    putStrLn "This did require making some changes, as the code does not freely accept multiple lists as input."
+    putStrLn "It is hard to verify quickly that the current implementation for comparing works correctly, and as expected."
+    putStrLn "Taking the inputs and targets [[], [1], [1,2], [2,1], [2,3]] leads to the sorting of the properties in the following order:"
+    print (sortAllPropertiesByStrength ["testIsDerangementLengthProperty", "testIsDerangementNoDuplicates", "testIsDerangementContainsSameElements", "testIsDerangementPermutation"])
+    putStrLn "Based purely on intuition, this does sound correct, as being a permutation is somewhat strict: it entails length and same elements."
