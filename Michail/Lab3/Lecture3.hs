@@ -176,6 +176,7 @@ evl xs (Equiv f1 f2) = evl xs f1 == evl xs f2
 satisfiable :: Form -> Bool
 satisfiable f = any (\ v -> evl v f) (allVals f)
 
+-- PARSER
 data Token 
       = TokenNeg
       | TokenCnj
