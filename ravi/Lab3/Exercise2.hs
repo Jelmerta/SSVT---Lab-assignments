@@ -1,3 +1,4 @@
+module Exercise2 where
 import Lecture3
 
 -- The parser in Lecture3.hs takes a string as input, and if the string
