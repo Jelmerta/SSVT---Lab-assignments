@@ -31,11 +31,11 @@ tautology form = all (\ v -> evl v form) (allVals form)
 
 -- logicalEntailment -  B logically entails A is true if and only if all the valuations thatsatisfy B also satisfy A. (As found in the lecture notes)
 entails :: Form -> Form -> Bool
-entails form1 form2 = all (\ v -> evl v form1 --> evl v form2) (allVals form1 ++ allVals form2) -- TODO Use Impl?
+entails form1 form2 = all (\ v -> evl v (Impl form1 form2)) (allVals (Impl form1 form2)) -- TODO Use Impl?
 
 -- | logical equivalence
 equiv :: Form -> Form -> Bool
-equiv form1 form2 = all (\ v -> evl v form1 == evl v form2) (allVals form1 ++ allVals form2)
+equiv form1 form2 = all (\ v -> evl v (Equiv form1 form2)) (allVals (Equiv form1 form2))
 
 -- To make sure these functions work correctly, we can make a truth table with an expected value and verify that we get the right outputs.
 
