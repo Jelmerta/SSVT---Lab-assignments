@@ -1,5 +1,4 @@
-module Bonus where
-import Lecture3
+module Bonus2 where
 
 indices :: [(Int,Int)]
 indices = [(i,j) | i <- [0..9], j <- [0..9]]
