@@ -18,5 +18,5 @@ f xs = map ((calcSum xs) . targets) indices
 
 bonus2 :: IO ()
 bonus2 = do
-    putStrLn "--- Bonus problem 164 ---"
+    putStrLn "--- Bonus problem 164 ---\n"
     print $ sum $ iterate f initial !! 18

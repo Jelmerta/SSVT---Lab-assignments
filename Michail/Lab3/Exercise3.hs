@@ -4,7 +4,6 @@ import Lecture3
 import SetOrd 
 import Data.List
 import Exercise1
-import Exercise2
 
 -- 3 hours
 

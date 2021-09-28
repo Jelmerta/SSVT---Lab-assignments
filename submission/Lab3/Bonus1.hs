@@ -1,6 +1,8 @@
-module Bonus where
+module Bonus1 where
 
 import Data.Char (digitToInt)
+
+-- Euler project 112
 
 -- Convert an integer to a list of its digits.
 -- https://stackoverflow.com/a/3964069
@@ -49,14 +51,16 @@ bouncyResult :: Int
 bouncyResult = head [x | x <- [1586995..1587000], fracBouncyNumbersTo x == 0.99]
 
 -- Main function to start the exercise code.
-bonus :: IO ()
-bonus = do
-    putStrLn "\n--- Euler problem 112 ---\n"
+bonus1 :: IO ()
+bonus1 = do
+    putStrLn "\n--- Bonus problem 112. ---\n"
+    putStrLn "--- Bouncy numbers ---"
     putStrLn "Find the least number for which the proportion of bouncy \
-    \numbers is exactly 99%.\n"
+    \numbers is exactly 99%."
+    putStrLn "The number we found is:"
     print bouncyResult
 
-    putStrLn "\nThis function can be tested to test some properties on bouncy \
+    putStrLn "This function can be tested by testing some properties on bouncy \
     \numbers. For example that all numbers in the list resulting from \
     \'bouncyNumbersTo' are not increasing- and not decreasing numbers, \
     \although the this pretty specificly tests what is actually already \

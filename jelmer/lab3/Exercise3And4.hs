@@ -12,6 +12,7 @@ import Exercise1
 import System.Random
 import Control.Monad
 
+
 -- Definition:
 -- A formula is said to be in CNF, or conjunctive normal form, if:
 -- 1. It is a conjunction of one or more clauses
