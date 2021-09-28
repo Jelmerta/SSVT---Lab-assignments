@@ -5,9 +5,10 @@ import SetOrd
 import Data.List
 import Exercise1
 import Exercise2
-import Data.Bool (Bool(True))
--- 2 hours
--- Write a Haskell program for converting formulas into CNF.
+
+-- 3 hours
+
+-- Write a Haskell program for converting formulas into CNF:
 
 -- CNF Defintitions
 -- A literal is an atom p or the negation of an atom ¬p.
@@ -64,11 +65,47 @@ nnf (Neg (Cnj fs)) = Dsj (map (nnf.Neg) fs)
 nnf (Neg (Dsj fs)) = Cnj (map (nnf.Neg) fs)
 -}
 
+---- Step 3: Distribute Dsj and Cnj to CNF form
+------ Apply distributive law for a Disjunction: A V (B Λ C) <--> (A V B) Λ (A V C)
+
+-- NOT MY CODE (from here): 
+-- Found this at: https://github.com/cristiantamas/ssvt-labs/blob/master/Lab_3/final_solution/Ex3.hs
+
+isSimpleAtom :: Form -> Bool
+isSimpleAtom (Prop x) = True
+isSimpleAtom (Neg (Prop x)) = True
+isSimpleAtom _ = False
+
+convertToCnf :: Form -> Form
+convertToCnf (Prop x) = Prop x
+convertToCnf (Neg (Prop x)) = Neg (Prop x)
+convertToCnf (Neg (Neg f)) = convertToCnf f
+convertToCnf (Dsj[a, b])
+    | isSimpleAtom a && isSimpleAtom b = Dsj[a, b]
+convertToCnf (Cnj[a, b])
+    | isSimpleAtom a && isSimpleAtom b = Cnj[a, b]
+convertToCnf (Cnj[f1, f2]) = Cnj[convertToCnf f1, convertToCnf f2]
+convertToCnf (Dsj [f1, Dsj fs]) =  convertToCnf (Cnj (map ((\ f -> Dsj [f1, f]) . convertToCnf) fs))
+convertToCnf (Dsj [f1, Cnj fs]) =  convertToCnf (Cnj (map ((\ f -> Dsj [f1, f]) . convertToCnf) fs))
+convertToCnf (Dsj [Cnj fs, f1]) =  convertToCnf (Cnj (map ((\ f -> Dsj [f, f1]) . convertToCnf) fs))
+convertToCnf (Dsj [Dsj fs, f1]) =  convertToCnf (Cnj (map ((\ f -> Dsj [f, f1]) . convertToCnf) fs))
+convertToCnf (Dsj [Prop x, f2]) = Dsj [Prop x, f2]
+
+------ Preconditions:
+-------- Arrowfree  and nnf input formula
+------ Postconditionsc (To test):
+-------- only conjuctions for the exterior 
+-------- logically equivalent to input formula
+
+
+-- (Until here) 
+-- MY CODE
+
 -- Convert form to CNF form
 -- Preconditions 
 ---- Valid Form : checked by type inference
 formToCNF :: Form -> Form 
-formToCNF = nnf . arrowfree
+formToCNF f = convertToCnf $ (nnf . arrowfree) f
 
 form10 = Impl (Neg(Cnj [Impl p q, Impl q r])) (Impl p r)
 
@@ -80,7 +117,7 @@ exercise3 = do
     print form10
     putStrLn ""
     putStrLn "Convert to CNF:\n"
-    print (formToCNF form3)
+    print (formToCNF form10)
     putStrLn ""
     
 
