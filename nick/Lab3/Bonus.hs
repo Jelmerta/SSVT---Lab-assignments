@@ -2,6 +2,8 @@ module Bonus where
 
 import Data.Char (digitToInt)
 
+-- Euler project 112
+
 -- Convert an integer to a list of its digits.
 -- https://stackoverflow.com/a/3964069
 digits :: Integer -> [Int]
