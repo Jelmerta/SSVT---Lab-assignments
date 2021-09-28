@@ -85,22 +85,25 @@ cnf1' = while (not . isCnf) cnf1
 -- Step 2: Reverse all the input literals: p becomes Neg p, Neg p becomes p.
 -- Step 3: Take the conjunction of the disjuncted reversed literals.
 
--- Takes one entry in the valuation
+-- Takes one entry in the valuation and inverse the negation (positive becomes negative, negative becomes positive)
 negateAtomsInClause :: (Name, Bool) -> Form
 negateAtomsInClause (name, val)
     | val = Neg (Prop name) -- atom is true, so negate the atom
     | otherwise = Prop name -- atom is false, so just return the atom
 
--- Dsj all the rows.
--- convertRowToClause :: Valuation -> Form
--- convertRowToClause row = map negateAtomsInClause row
-    -- | length row == 1 = negateAtomsInClause (head e)
-    -- | otherwise = 
+convertRowToClause :: Valuation -> Form
+convertRowToClause row
+    | length row == 1 = negateAtomsInClause (head row)
+    | otherwise = Dsj $ negateAtomsInClause <$> row
 
--- cnf2 :: Form -> Form
--- cnf2 f =
+-- Evaluate the possible rows (valuations) for the formula and only retrieve the ones that are false
+falseRows :: Form -> [Valuation]
+falseRows form = filter (\val -> not (evl val form)) (allVals form)
 
-
+cnf2 :: Form -> Form
+cnf2 f 
+    | ((length (falseRows f)) == 1) = convertRowToClause (head (falseRows f))
+    | otherwise = Cnj (convertRowToClause <$> falseRows f)
 
 -- End of method 2
 
@@ -141,7 +144,7 @@ isValidLiteral _ = False
 -- To make sure all lists have at least two arguments, we make use of the liftM2 operator to find two arbitrary forms. This could probably be simplified somehow...
 -- Then, there is a chance another value will be added to the list to make sure we do not receive only 2 arguments.
 formListGen :: Gen [Form]
-formListGen = frequency [(2, liftM2 (:) arbitrary (liftM2 (:) arbitrary (return []))), (1, liftM2 (:) arbitrary formListGen)] 
+formListGen = frequency [(4, liftM2 (:) arbitrary (liftM2 (:) arbitrary (return []))), (1, liftM2 (:) arbitrary formListGen)] 
 
 -- Example output of sample formGen (one of the better ones, often it will have a single Prop, or very long formulas)
 -- 0
@@ -156,7 +159,7 @@ formListGen = frequency [(2, liftM2 (:) arbitrary (liftM2 (:) arbitrary (return 
 -- 4
 -- --15
 formGen :: Gen Form
-formGen = frequency [(6, liftM Prop arbitrary), -- HLinter mentions we can use fmap instead of liftM. liftM works fine for us. 
+formGen = frequency [(16, liftM Prop arbitrary), -- HLinter mentions we can use fmap instead of liftM. liftM works fine for us. 
     (1, liftM Neg arbitrary),
     (1, liftM Cnj formListGen),
     (1, liftM Dsj formListGen),
@@ -166,11 +169,14 @@ formGen = frequency [(6, liftM Prop arbitrary), -- HLinter mentions we can use f
 instance Arbitrary Form where
     arbitrary = formGen
 
--- To make sure that we succeed in finding a CNF, we verify that the found formula matches the following criteria:
--- 1. 
--- And make sure that the input formula and output formula are logically equivalent
+-- To make sure that we succeed in finding a CNF, we should verify that the found formula matches the following criteria:
+-- 1. The resulting formula is equivalent with the input formula
+-- 2. The resulting formula is in CNF
 testCnf1 :: Form -> Bool
-testCnf1 f = equiv f (cnf1' f)
+testCnf1 f = equiv f (cnf1' f) -- Currently only checking equivalence, cnf1' implicitly checks until the formula is in CNF.
+
+testCnf2 :: Form -> Bool
+testCnf2 f = equiv f (cnf2 f) && (isCnf (cnf2 f))
 
 exercise3And4 :: IO ()
 exercise3And4 = do
@@ -213,10 +219,12 @@ exercise3And4 = do
 
     putStrLn "\n\nExample output of the form generator:"
     sample formGen
-    -- TODO: Right now some functions cannot be turned into CNF. We have to figure out when this happens. It works fine for smaller functions.
-    -- quickCheck testCnf
-    -- verboseCheck testCnf
-    verboseCheck $ forAll formGen $ \input -> isCnf (cnf1' input)
-    -- quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementPermutation input target
+    -- Right now some functions cannot be turned into CNF. We have to figure out when this happens. It works fine for smaller functions.
+    -- May run several cases successfully, but won't resolve larger, complexer formulas.
+    -- verboseCheck $ forAll formGen $ \input -> isCnf (cnf1' input)
 
-    -- TODO: Quickcheck our random generator along with some properties (could just be the isCnf function, along with the equivalence check, other properties can also be checked.)
+    -- This may also result in quickCheck running forever, which is likely caused by an explosion in input arguments options from allVals.
+    -- To make sure this doesn't happen, we toned down the formula creation quite a bit to create smaller formulas on average. Though this often results in very simple dull formulas.
+    -- With this generator it is very easy to get either very small or very large formulas: it is difficult to find a middle ground. Improvements could be made in this area.
+    -- We believe this will likely work on larger formulas, but simply take too long too compute.
+    quickCheck testCnf2
