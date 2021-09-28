@@ -1,5 +1,7 @@
 -- Task: Write a Haskell program for converting formulas into CNF
 -- Approx time spent: 10h
+-- Note: This file contains both exercise 3 and 4 as ex 4 is very relevant to exercise 3.
+-- Note: Sometimes running this may take a while (explained below). It might be better to just rerun the assignment if this happens (somewhat rarely).
 
 module Exercise3And4 where
 
@@ -173,8 +175,31 @@ instance Arbitrary Form where
 testCnf1 :: Form -> Bool
 testCnf1 f = equiv f (cnf1' f) -- Currently only checking equivalence, cnf1' implicitly checks until the formula is in CNF.
 
-testCnf2 :: Form -> Bool
-testCnf2 f = equiv f (cnf2 f) && (isCnf (cnf2 f))
+-- Property 1: The resulting formula should be logically equivalent
+prop_cnf2Equivalence :: Form -> Bool
+prop_cnf2Equivalence f = equiv f (cnf2 f)
+
+-- Property 2: The resulting formula should be in CNF form
+prop_cnf2IsCnf :: Form -> Bool
+prop_cnf2IsCnf f = isCnf (cnf2 f)
+
+-- Property 3: The result should have no occurrences of Impl or Equiv.
+prop_cnf2CheckNoArrows :: Form -> Bool
+prop_cnf2CheckNoArrows (Prop x) = True
+prop_cnf2CheckNoArrows (Neg x) = prop_cnf2CheckNoArrows x
+prop_cnf2CheckNoArrows (Cnj fs) = all prop_cnf2CheckNoArrows fs
+prop_cnf2CheckNoArrows (Dsj xs) = all prop_cnf2CheckNoArrows xs
+prop_cnf2CheckNoArrows _ = False
+
+-- Property 4: Only atoms are negated in the formula. This is tested by checking if there is a Neg just before Cnj or Dsj
+prop_cnf2OnlyAtomsNegated :: Form -> Bool
+prop_cnf2OnlyAtomsNegated (Prop x) = True
+prop_cnf2OnlyAtomsNegated (Neg (Dsj xs)) = False
+prop_cnf2OnlyAtomsNegated (Neg (Cnj xs)) = False
+prop_cnf2OnlyAtomsNegated (Neg x) = True
+prop_cnf2OnlyAtomsNegated (Cnj fs) = all prop_cnf2OnlyAtomsNegated fs
+prop_cnf2OnlyAtomsNegated (Dsj xs) = all prop_cnf2OnlyAtomsNegated xs
+prop_cnf2OnlyAtomsNegated _ = False
 
 exercise3And4 :: IO ()
 exercise3And4 = do
@@ -226,4 +251,8 @@ exercise3And4 = do
     -- With this generator it is very easy to get either very small or very large formulas: it is difficult to find a middle ground. Improvements could be made in this area.
     -- We believe this will likely work on larger formulas, but simply take too long too compute.
     putStrLn "\n\nChecking cnf2 implementation using quickcheck"
-    quickCheck testCnf2
+    quickCheck prop_cnf2Equivalence
+    quickCheck prop_cnf2IsCnf
+    quickCheck $ forAll formGen $ \input -> prop_cnf2CheckNoArrows (cnf2 input)
+    quickCheck $ forAll formGen $ \input -> prop_cnf2OnlyAtomsNegated (cnf2 input)
+    putStrLn "\n"
