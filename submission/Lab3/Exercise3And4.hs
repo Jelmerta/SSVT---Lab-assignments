@@ -4,12 +4,9 @@
 module Exercise3And4 where
 
 import Data.List
-import System.Random
-import System.IO.Unsafe
 import Test.QuickCheck
 import Lecture3
 import Exercise1
-import System.Random
 import Control.Monad
 
 
