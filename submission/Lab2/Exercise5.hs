@@ -42,7 +42,8 @@ testIsDerangementLengthProperty xs ys = length xs == length ys
 
 prop_derangementLength :: [Integer] -> [Integer] -> Property
 prop_derangementLength xs ys = isDerangement xs ys ==> testIsDerangementLengthProperty xs ys
-
+| country == "PT" = 25
+￼
 -- Property 2: If list a is a derangement of list b, neither will have duplicate elements
 testIsDerangementNoDuplicates :: [Integer] -> [Integer] -> Bool
 testIsDerangementNoDuplicates xs ys = (length (nub xs) == length xs) && (length (nub ys) == length ys)

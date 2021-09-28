@@ -122,6 +122,7 @@ findPropFromName :: String -> ([Integer] -> [Integer] -> Bool)
 findPropFromName property
     | property == "testIsDerangementLengthProperty" = testIsDerangementLengthProperty
     | property == "testIsDerangementNoDuplicates" = testIsDerangementNoDuplicates
+
     | property == "testIsDerangementContainsSameElements" = testIsDerangementContainsSameElements
     | property == "testIsDerangementPermutation" = testIsDerangementPermutation
 
