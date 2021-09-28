@@ -39,9 +39,9 @@ f xs = map ((calcSum xs) . targets) indices
 
 bonus2 :: IO ()
 bonus2 = do
-    putStrLn "\n--- Euler problem 164 ---\n"
+    putStrLn "\n--- Bonus problem 164 ---\n"
     putStrLn "How many 20 digit numbers n (without any leading zero) exist such that no three consecutive digits of n have a sum greater than 9?\n"
 
     print $ sum $ iterate f initial !! 18
 
-    putStrLn "The function could be tested by creating a bruteforce solution to the problem and then comparing the two functions for low input values."
+    putStrLn "\nThe function could be tested by creating a bruteforce solution to the problem and then comparing the two functions for low input values."

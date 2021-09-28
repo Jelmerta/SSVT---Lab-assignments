@@ -3,8 +3,8 @@ import Exercise2
 -- import Exercise3
 -- import Exercise4
 -- import Exercise5
--- import Exercise6
-import Bonus
+import Exercise6
+import Bonus1
 import Bonus2
 import Bonus3
 
@@ -15,7 +15,8 @@ main = do
     -- exercise3
     -- exercise4
     -- exercise5
-    -- exercise6
-    bonus
+    exercise6
+    putStrLn "\n--- Bonus assignments: Project Euler ---\n"
+    bonus1
     bonus2
     bonus3
