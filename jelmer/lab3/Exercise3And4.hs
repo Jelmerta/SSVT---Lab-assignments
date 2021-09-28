@@ -1,5 +1,5 @@
 -- Task: Write a Haskell program for converting formulas into CNF
--- Approx time spent: 7h
+-- Approx time spent: 10h
 
 module Exercise3And4 where
 
@@ -224,8 +224,9 @@ exercise3And4 = do
     -- May run several cases successfully, but won't resolve larger, complexer formulas.
     -- verboseCheck $ forAll formGen $ \input -> isCnf (cnf1' input)
 
-    -- This may also result in quickCheck running forever, which is likely caused by an explosion in input arguments options from allVals.
+    -- The new method may also result in quickCheck running forever, which is likely caused by an explosion in input arguments options from allVals.
     -- To make sure this doesn't happen, we toned down the formula creation quite a bit to create smaller formulas on average. Though this often results in very simple dull formulas.
     -- With this generator it is very easy to get either very small or very large formulas: it is difficult to find a middle ground. Improvements could be made in this area.
     -- We believe this will likely work on larger formulas, but simply take too long too compute.
+    putStrLn "\n\nChecking cnf2 implementation using quickcheck"
     quickCheck testCnf2
