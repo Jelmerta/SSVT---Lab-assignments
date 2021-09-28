@@ -105,24 +105,23 @@ isValidLiteral _ = False
 
 -- Dsj and Cnj require a list of forms. For this, a separate generator is introduced to make sure the lists of forms are relevant
 -- This does introduce a circular dependency between formListGen and the generator for Forms, which is probably not all too great.
+-- To make sure all lists have at least two arguments, we make use of the liftM2 operator to find two arbitrary forms. This could probably be simplified somehow...
+-- Then, there is a chance another value will be added to the list to make sure we do not receive only 2 arguments.
 formListGen :: Gen [Form]
-formListGen = frequency [(1, return []), (1, liftM2 (:) arbitrary formListGen)] 
+formListGen = frequency [(2, liftM2 (:) arbitrary (liftM2 (:) arbitrary (return []))), (1, liftM2 (:) arbitrary formListGen)] 
 
--- Example output of sample formGen:
--- (0==>(0<=>+(0 0 0)))
--- 2
--- *(0 *(4 (*()==>2) +(4 -3 -3)))
--- *()
--- -5
--- *(7)
--- (-5==>(-8<=>-8))
--- -7
--- ((*()==>(-1==>(*(*() +(3) (2==>15) *(+() *(12)) 1)<=>+(-7))))==>+())
--- (3==>(15<=>6))
--- -14
--- As you may be able to tell: 
--- formGen produces empty lists, and lists of 1. Cnj and Dsj of 0/1 are not interesting (or even incorrect).
--- This can be improved by always returning at least 2 forms, with a low chance to add more.
+-- Example output of sample formGen (one of the better ones, often it will have a single Prop, or very long formulas)
+-- 0
+-- (((-1<=>-2)==>+(2 --2))<=>0)
+-- (-3<=>-2)
+-- *(-3 (0<=>-4) 1)
+-- ((+((-3==>(1==>(4==>+((-8<=>+(-1 3)) 5 -3 5)))) 0)<=>4)<=>2)
+-- (6==>*(6 1))
+-- (-7==>-11)
+-- +(-10 14 4)
+-- +(+(-5 16) *(-7 *(2 8)) 3)
+-- 4
+-- --15
 formGen :: Gen Form
 formGen = frequency [(6, liftM Prop arbitrary),
     (1, liftM Neg arbitrary),
@@ -133,80 +132,6 @@ formGen = frequency [(6, liftM Prop arbitrary),
 
 instance Arbitrary Form where
     arbitrary = formGen
-
--- formListGen' :: Gen [Form]
--- formListGen' = frequency [(1, return []), (6, liftM2 (:) arbitrary formListGen)]
-
--- instance Arbitrary [Form] where
---     arbitrary = formListGen
-
--- formList :: Gen [Form]
--- formList = sized $
---     \n -> do
---         k <- choose (0,n)
---         sequence [arbitrary | _ [1..k]]
-
--- instance Arbitrary a => Arbitrary [a] where
---     arbitrary = formListGen 0
-
--- Override the function for list generation in QuickCheck so that we do not create massive lists
--- instance Arbitrary [Form] where
-    -- arbitrary = oneof [return [], liftM2 (:) arbitrary arbitrary]
--- arbFormList 0 = liftM  []
--- arbFormList n = liftM2 (:) (arbForm n-1) (arbFormList n-1) 
-
--- instance Arbitrary a => Arbitrary (Form a) 
-
-
--- instance Arbitrary a => Arbitrary Form a where
--- arbitrary (Cnj [p,q])
---  	 liftM Leaf arbitrary
---   liftM Br
--- generate
--- arbitrary elements in it
--- class A
-
--- TODO Generate a tree and check using QuickCheck
-
--- newRand = randomIO :: IO Int
-
--- print(newRand)
--- formGenerator :: Int -> Int -> Form
--- formGenerator depth operation = formGenerator' 0 depth operation
-
-
-
--- formGenerator :: Int -> Form
--- formGenerator depth = do
---     -- randomNumber <- randomIO :: Integer
---     randomNumber <- randomRIO (1,6)
---     return formGenerator' 0 depth randomNumber
---     -- return form
-
-formGenerator' :: Int -> Int -> Int -> Form
-formGenerator' currentDepth maxDepth operation
-    | (currentDepth == maxDepth) || (operation == 1 && currentDepth <= maxDepth) = Prop currentDepth -- Single atom, if we reach the last depth, we have to put an atom.
-    -- | randomNumber == 2 && currentDepth <= maxDepth = do -- Negation of atom
-    --     form <- formGenerator (currentDepth - 1)
-    --     return (Neg form)
-    -- | randomNumber == 3 && currentDepth <= maxDepth = do
-    --         -- NOTE We could do this for longer with a chance to add an additional conjunction
-    --         formFirst <- formGenerator (currentDepth - 1)
-    --         formSecond <- formGenerator (currentDepth - 2)
-    --         return (Cnj [formFirst, formSecond])
-    -- | randomNumber == 4 && currentDepth <= maxDepth = do 
-    --         formFirst <- formGenerator (currentDepth - 1)
-    --         formSecond <- formGenerator (currentDepth - 2)
-    --         return (Dsj [formFirst, formSecond])
-    -- | randomNumber == 5 && currentDepth <= maxDepth = do
-    --         formFirst <- formGenerator (currentDepth - 1)
-    --         formSecond <- formGenerator (currentDepth - 2)
-    --         return (Impl [formFirst, formSecond]) 
-    -- | randomNumber == 6 && currentDepth <= maxDepth = do
-    --             formFirst <- formGenerator (currentDepth - 1)
-    --             formSecond <- formGenerator (currentDepth - 2)
-    --             return (Equiv [formFirst, formSecond])
-
 
 -- To make sure that we succeed in finding a CNF, we verify that the found formula matches the following criteria:
 -- 1. 
@@ -253,6 +178,10 @@ exercise3And4 = do
     putStrLn "Not all formulas will work, especially with longer disjunction of conjunctions."
     putStrLn "Duplicates may remain in the final formula and is not the minimal form"
 
+    -- TODO: Right now some functions cannot be turned into CNF. We have to figure out when this happens. It works fine for smaller functions.
+    -- quickCheck testCnf
+    -- verboseCheck testCnf
+    verboseCheck $ forAll formGen $ \input -> isCnf (cnf' input)
     -- quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementPermutation input target
 
     -- TODO: Quickcheck our random generator along with some properties (could just be the isCnf function, along with the equivalence check, other properties can also be checked.)

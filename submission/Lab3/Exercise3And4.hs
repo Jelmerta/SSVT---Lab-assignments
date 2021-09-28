@@ -5,10 +5,12 @@ module Exercise3And4 where
 
 import Data.List
 import System.Random
+import System.IO.Unsafe
 import Test.QuickCheck
 import Lecture3
 import Exercise1
 import System.Random
+import Control.Monad
 
 -- Definition:
 -- A formula is said to be in CNF, or conjunctive normal form, if:
@@ -97,32 +99,39 @@ isValidLiteral _ = False
 
 
 -- Around here is where Ex 4 starts.
--- Generating a random formula can be done by generating a tree: Every subtree can be a randomized operator or literal to stop iteration.
--- A max depth has to be set in order to not get an immense tree.
+-- Generating a random formula can be done by generating a tree structure of forms.
+-- We will recursively create forms until every node is an atom. It is important that we create enough chance for it to reach the stopping condition, otherwise we will create an endless form.
+-- At every depth (and therefore every subtree) we will choose an operator or atom to stop iteration.
 
--- Helper to generate random value to know what should be added to the form
-getRandomNumber :: Integer -> IO Integer
-getRandomNumber maxValue = randomRIO (1, maxValue)
+-- Dsj and Cnj require a list of forms. For this, a separate generator is introduced to make sure the lists of forms are relevant
+-- This does introduce a circular dependency between formListGen and the generator for Forms, which is probably not all too great.
+-- To make sure all lists have at least two arguments, we make use of the liftM2 operator to find two arbitrary forms. This could probably be simplified somehow...
+-- Then, there is a chance another value will be added to the list to make sure we do not receive only 2 arguments.
+formListGen :: Gen [Form]
+formListGen = frequency [(2, liftM2 (:) arbitrary (liftM2 (:) arbitrary (return []))), (1, liftM2 (:) arbitrary formListGen)] 
 
--- A depth is added to make sure formulas don't become too long
-formGenerator :: Integer ->  IO String
-formGenerator depth = do
-    randomNumber <- getRandomNumber 6
-    form <- formGenerator' 0 depth randomNumber
-    return form
+-- Example output of sample formGen (one of the better ones, often it will have a single Prop, or very long formulas)
+-- 0
+-- (((-1<=>-2)==>+(2 --2))<=>0)
+-- (-3<=>-2)
+-- *(-3 (0<=>-4) 1)
+-- ((+((-3==>(1==>(4==>+((-8<=>+(-1 3)) 5 -3 5)))) 0)<=>4)<=>2)
+-- (6==>*(6 1))
+-- (-7==>-11)
+-- +(-10 14 4)
+-- +(+(-5 16) *(-7 *(2 8)) 3)
+-- 4
+-- --15
+formGen :: Gen Form
+formGen = frequency [(6, liftM Prop arbitrary),
+    (1, liftM Neg arbitrary),
+    (1, liftM Cnj formListGen),
+    (1, liftM Dsj formListGen),
+    (1, liftM2 Equiv arbitrary arbitrary),
+    (1, liftM2 Impl arbitrary arbitrary)]
 
-formGenerator' :: Integer -> Integer -> Integer -> IO [Char]
-formGenerator' currentDepth maxDepth randomNumber 
-    | randomNumber == 1 && currentDepth <= maxDepth = return (show currentDepth) -- Single atom
-    | randomNumber == 2 && currentDepth <= maxDepth = do -- Negation of atom
-        form <- formGenerator (currentDepth - 1)
-        return ("-" ++ form)
-    | randomNumber == 3 && currentDepth <= maxDepth = return (show currentDepth)
-    | randomNumber == 4 && currentDepth <= maxDepth = return (show currentDepth)
-    | randomNumber == 5 && currentDepth <= maxDepth = return (show currentDepth)
-    | randomNumber == 6 && currentDepth <= maxDepth = return (show currentDepth)
-
-
+instance Arbitrary Form where
+    arbitrary = formGen
 
 -- To make sure that we succeed in finding a CNF, we verify that the found formula matches the following criteria:
 -- 1. 
@@ -169,5 +178,10 @@ exercise3And4 = do
     putStrLn "Not all formulas will work, especially with longer disjunction of conjunctions."
     putStrLn "Duplicates may remain in the final formula and is not the minimal form"
 
+    -- TODO: Right now some functions cannot be turned into CNF. We have to figure out when this happens. It works fine for smaller functions.
+    -- quickCheck testCnf
+    -- verboseCheck testCnf
+    verboseCheck $ forAll formGen $ \input -> isCnf (cnf' input)
+    -- quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementPermutation input target
 
     -- TODO: Quickcheck our random generator along with some properties (could just be the isCnf function, along with the equivalence check, other properties can also be checked.)
