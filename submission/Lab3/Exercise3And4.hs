@@ -37,39 +37,72 @@ import Control.Monad
 nnfConvert :: Form -> Form
 nnfConvert form = nnf (arrowfree form)
 
--- Next, to convert from NNF to CNF we have to distribute the ORs inwards over AND.
+-- To convert to CNF, two methods are implemented. The first method is incomplete and resulted in more complex formulas to not ever result in anything. It works fine for smaller formulas.
+
+-- Start of method 1: Direct conversion from from the formula to CNF
+-- To convert directly, we have to convert the formula to NNF using the provided methods, and then to CNF by distributing the ORs inwards over AND, as explained on the aforementioned wikipedia page.
 -- This means we have to replace formulas (p∨q)∧r with (p∨q)∧(p∨r). These are logically equivalent.
 -- We want to make sure we don't have multiple disjunctions or conjunctions in a row, such as (p∧q)∧r, as the functions used for disjunctions and conjunctions support lists of forms instead of just two forms.
 -- We didn't do this, but an improvement could also be to make sure there are no duplicates.
 cnfConvert :: Form -> Form
-cnfConvert (Cnj cs) = Cnj (reduceConjunctions (map cnf cs)) -- Conjunctions are made smaller as explained above.
+cnfConvert (Cnj cs) = Cnj (reduceConjunctions (map cnf1 cs)) -- Conjunctions are made smaller as explained above.
 cnfConvert (Dsj [d]) = d -- Base case for disjunction if it only contains one element due to reduction
--- cnfConvert (Dsj ((Cnj c):ds)) = Cnj [(Dsj [c, d]) | d <- ds] -- Might have to play around with arbitrary position for Cnj more...
+-- cnfConvert (Dsj ((Cnj c):ds)) = Cnj [(Dsj [c, d]) | d <- ds] -- Might have to play around with arbitrary position for Cnj more... Right now we only reduce the conjunctions if they are at the start of a list
 -- cnfConvert (Dsj (Cnj (c:cs):ds)) = Cnj [Dsj [c,d] | d <- ds]
-cnfConvert (Dsj (Dsj d1:ds)) = cnf (Dsj (d1 ++ ds))
-cnfConvert (Dsj (f1: Cnj[f2, f3]: f4)) = Dsj (Cnj[Dsj[cnf f1, cnf f2], Dsj[cnf f1, cnf f3]]: f4) -- Making sure that lists longer than 2 elements also work by checking first 2 elements and keeping the rest of the list in place. If a conjunction exists later in the list, this might not be found...
-cnfConvert (Dsj ((Cnj[f1,f2]: f3 : f4))) = Dsj (Cnj[Dsj[cnf f1, cnf f3], Dsj[cnf f2, cnf f3]] : f4)
-cnfConvert (Dsj ds) = Dsj (reduceDisjunctions (map cnf ds))
+cnfConvert (Dsj (Dsj d1:ds)) = cnf1 (Dsj (d1 ++ ds))
+cnfConvert (Dsj (f1: Cnj[f2, f3]: f4)) = Dsj (Cnj[Dsj[cnf1 f1, cnf1 f2], Dsj[cnf1 f1, cnf1 f3]]: f4) -- Making sure that lists longer than 2 elements also work by checking first 2 elements and keeping the rest of the list in place. If a conjunction exists later in the list, this might not be found... Not sure how to resolve this.
+cnfConvert (Dsj ((Cnj[f1,f2]: f3 : f4))) = Dsj (Cnj[Dsj[cnf1 f1, cnf1 f3], Dsj[cnf1 f2, cnf1 f3]] : f4)
+cnfConvert (Dsj ds) = Dsj (reduceDisjunctions (map cnf1 ds))
 cnfConvert f = f -- Anything else, such as a literal, stays the same after conversion
 
 reduceConjunctions :: [Form] -> [Form]
 reduceConjunctions [] = []
 reduceConjunctions (Cnj c:fs) = reduceConjunctions c ++ reduceConjunctions fs
-reduceConjunctions (f:fs) = (f:reduceConjunctions fs)
+reduceConjunctions (f:fs) = f:reduceConjunctions fs
 
 -- Should only be used if there are no more conjunctions in the disjunction...
 reduceDisjunctions :: [Form] -> [Form]
 reduceDisjunctions [] = []
 reduceDisjunctions (Dsj d:fs) = reduceDisjunctions d ++ reduceDisjunctions fs
-reduceDisjunctions (f:fs) = (f:reduceDisjunctions fs)
+reduceDisjunctions (f:fs) = f:reduceDisjunctions fs
 
 -- Performs one iteration to find a CNF. Often, we do not find the CNF in one iteration.
-cnf :: Form -> Form
-cnf f = cnfConvert (nnfConvert (arrowfree f))
+cnf1 :: Form -> Form
+cnf1 f = cnfConvert (nnfConvert (arrowfree f))
 
 -- To make sure we do find a CNF, we loop until we make sure the resulting formula is in CNF.
-cnf' :: Form -> Form
-cnf' form = while (not . isCnf) cnf form
+-- To test individual formulas from text-input we can use something like this: map cnf' (parse "*(3 4)")
+cnf1' :: Form -> Form
+cnf1' = while (not . isCnf) cnf1
+
+-- End of method 1
+
+-- Start of method 2
+-- Method 2 was explained in class: We can convert a truth table to CNF.
+-- We can fairly easily construct a truth table from the original function.
+-- The following steps have to be taken to convert a truth table to CNF:
+-- Step 1: Take all rows in the truth table that lead to a false result.
+-- Step 2: Reverse all the input literals: p becomes Neg p, Neg p becomes p.
+-- Step 3: Take the conjunction of the disjuncted reversed literals.
+
+-- Takes one entry in the valuation
+negateAtomsInClause :: (Name, Bool) -> Form
+negateAtomsInClause (name, val)
+    | val = Neg (Prop name) -- atom is true, so negate the atom
+    | otherwise = Prop name -- atom is false, so just return the atom
+
+-- Dsj all the rows.
+-- convertRowToClause :: Valuation -> Form
+-- convertRowToClause row = map negateAtomsInClause row
+    -- | length row == 1 = negateAtomsInClause (head e)
+    -- | otherwise = 
+
+-- cnf2 :: Form -> Form
+-- cnf2 f =
+
+
+
+-- End of method 2
 
 -- To find out if the formula is CNF, every part of it is checked. All conjunctions should only contain disjunctions or literals. All conjunctions should only contain literals. Anything else is not CNF.
 -- Example of just a single clause: isCnf (Dsj[q,Neg p])
@@ -98,7 +131,7 @@ isValidLiteral (Neg (Prop atom)) = True
 isValidLiteral _ = False
 
 
--- Around here is where Ex 4 starts.
+-- Exercise 4
 -- Generating a random formula can be done by generating a tree structure of forms.
 -- We will recursively create forms until every node is an atom. It is important that we create enough chance for it to reach the stopping condition, otherwise we will create an endless form.
 -- At every depth (and therefore every subtree) we will choose an operator or atom to stop iteration.
@@ -123,7 +156,7 @@ formListGen = frequency [(2, liftM2 (:) arbitrary (liftM2 (:) arbitrary (return 
 -- 4
 -- --15
 formGen :: Gen Form
-formGen = frequency [(6, liftM Prop arbitrary),
+formGen = frequency [(6, liftM Prop arbitrary), -- HLinter mentions we can use fmap instead of liftM. liftM works fine for us. 
     (1, liftM Neg arbitrary),
     (1, liftM Cnj formListGen),
     (1, liftM Dsj formListGen),
@@ -136,8 +169,8 @@ instance Arbitrary Form where
 -- To make sure that we succeed in finding a CNF, we verify that the found formula matches the following criteria:
 -- 1. 
 -- And make sure that the input formula and output formula are logically equivalent
-testCnf :: Form -> Bool
-testCnf f = equiv f (cnf' f)
+testCnf1 :: Form -> Bool
+testCnf1 f = equiv f (cnf1' f)
 
 exercise3And4 :: IO ()
 exercise3And4 = do
@@ -153,35 +186,37 @@ exercise3And4 = do
 -- *(+(1 -1) +(2 -1) +(1 -2) +(2 -2))
 -- Finally CNF!
     putStrLn "Converting to CNF gives:"
-    print (cnf' (Equiv p q))
+    print (cnf1' (Equiv p q))
     putStrLn "Verifying if this is CNF:"
-    print (isCnf (cnf' (Equiv p q)))
+    print (isCnf (cnf1' (Equiv p q)))
     putStrLn "Verifying these are equivalent:"
-    print (testCnf (Equiv p q))
+    print (testCnf1 (Equiv p q))
     putStrLn "\n\nWe can also find the CNFs of the given formules in Lecture3.hs:"
     putStrLn "Form1:"
     print (form1)
-    print (cnf' form1)
-    print (isCnf (cnf' form1))
-    print (testCnf (form1))
+    print (cnf1' form1)
+    print (isCnf (cnf1' form1))
+    print (testCnf1 (form1))
     putStrLn "Form2:"
     print (form2)
-    print (cnf' form2)
-    print (isCnf (cnf' form2))
-    print (testCnf (form2))
+    print (cnf1' form2)
+    print (isCnf (cnf1' form2))
+    print (testCnf1 (form2))
     putStrLn "Form3:"
     print (form3)
-    print (cnf' form3)
-    print (isCnf (cnf' form3))
-    print (testCnf (form3))
+    print (cnf1' form3)
+    print (isCnf (cnf1' form3))
+    print (testCnf1 (form3))
     putStrLn "We believe there are still some small errors and optimizations possible."
     putStrLn "Not all formulas will work, especially with longer disjunction of conjunctions."
     putStrLn "Duplicates may remain in the final formula and is not the minimal form"
 
+    putStrLn "\n\nExample output of the form generator:"
+    sample formGen
     -- TODO: Right now some functions cannot be turned into CNF. We have to figure out when this happens. It works fine for smaller functions.
     -- quickCheck testCnf
     -- verboseCheck testCnf
-    verboseCheck $ forAll formGen $ \input -> isCnf (cnf' input)
+    verboseCheck $ forAll formGen $ \input -> isCnf (cnf1' input)
     -- quickCheck $ forAll randomInput $ \input -> forAll randomInput $ \target -> prop_derangementPermutation input target
 
     -- TODO: Quickcheck our random generator along with some properties (could just be the isCnf function, along with the equivalence check, other properties can also be checked.)
