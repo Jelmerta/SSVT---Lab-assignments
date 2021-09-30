@@ -2,8 +2,6 @@ module Exercise3 where
 -- Author: Michail Skalistiris Pikis
 -- 20 mins
 
-import SetOrd
-import Exercise2
 
 type Rel a = [(a,a)]
 
