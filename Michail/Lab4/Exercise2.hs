@@ -57,10 +57,6 @@ testDistributivityIntersectioni setA setB setC = (intersectionSet setA (unionSet
 testDistributivityIntersectionii setA setB setC = (unionSet setA (intersectionSet setB setC)) == (intersectionSet (unionSet setA setB) (unionSet setA setC))
 
 
-
-
-
-
 -- UNION
 -- 2. A U B = { x | (x E A) V (x E B)}
 
@@ -185,8 +181,7 @@ exercise2 = do
     putStrLn "\nAnother property considered in included in the comments"
     putStrLn "\n- QuickCheck Tests\n"
     quickCheck $ forAll quickCheckRandSet testSelfDifference
-    putStrLn ""
-
+    putStrLn "\nThe tests above checks if the basic properties\n(according to theory)hold for the functions that we were asked.\nAlthough testing is not absolute evidence, as the mathematical\nproof is, it strongly indicates that the properties\nhold for a number (100) of sets\n"
 
 
 
