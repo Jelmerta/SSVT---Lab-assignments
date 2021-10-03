@@ -1,5 +1,7 @@
 module Exercise7 where
 
+-- Time spent: 30 minutes
+
 -- Exercise 7
 -- Is there a difference between the symmetric closure of the transitive closure
 -- of a relation R and the transitive closure of the symmetric closure of R?

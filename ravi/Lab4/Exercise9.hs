@@ -1,6 +1,9 @@
 module Exercise9 where
 import Data.List
 
+-- Time spent: 5 hours
+
+
 -- Bonus problem 209: Circular Logic
 
 -- A k-input binary truth table is a map from k input bits (binary digits,

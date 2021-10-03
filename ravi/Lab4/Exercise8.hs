@@ -1,6 +1,9 @@
 module Exercise8 where
 import Lecture4
 
+-- Time spent: 2.5 hours
+
+-- Show function defined for expressions
 instance Show Expr where
     show (I n) = show n
     show (V var) = var
@@ -8,6 +11,7 @@ instance Show Expr where
     show (Subtr expr1 expr2) = (show expr1) ++ " - " ++ (show expr2)
     show (Mult expr1 expr2) = (show expr1) ++ " * " ++ (show expr2)
 
+-- Show function defined for conditions
 instance Show Condition where
     show (Prp var) = var
     show (Eq expr1 expr2) = (show expr1) ++ " == " ++ (show expr2)
@@ -17,6 +21,7 @@ instance Show Condition where
     show (Cj (h:t)) = (show h) ++ " and " ++ (show t)
     show (Dj (h:t)) = (show h) ++ " or " ++ (show t)
 
+-- Show function defined for statements
 instance Show Statement where
     show (Ass var expr) = var ++ " = " ++ (show expr)
     show (Cond cond stmt1 stmt2) = (show stmt1) ++ (show cond) ++ (show stmt2)
