@@ -50,11 +50,13 @@ prop_serial_length_check rel = isSerial (domR rel) rel ==> (length (domR rel)) <
 isReflexive :: Eq a => [a] -> Rel a -> Bool
 isReflexive domain rel = length domain == length [1 | (x,y) <- rel, x == y, x `elem` domain, (x,x) `elem` rel]
 
+
+-- We found out that you can find the domain of a relation as defined in Haskell Road 5.3.
 -- domR simply finds out all the domain values in the pairs and adds them together.
 domR :: Rel Integer -> [Integer]
 domR r = [d | (d,_) <- r]
 
--- First we implemented this property by providing a domain, we found out that you can find the domain of a relation as defined in Haskell Road 5.3. This is implemented after the commented code.
+
 prop_serial_reflex_is_serial :: Rel Integer -> Property
 prop_serial_reflex_is_serial rel = isReflexive (domR rel) rel ==> isSerial (domR rel) rel
 
