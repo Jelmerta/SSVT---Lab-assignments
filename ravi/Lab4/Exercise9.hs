@@ -91,3 +91,13 @@ exercise9 = do
     \τ(a, b, c, d, e, f) AND τ(b, c, d, e, f, a XOR (b AND c)) = 0\n\
     \for all 6-bit inputs (a, b, c, d, e, f)?\n"
     print answer
+
+-- Extra explanation:
+-- Why is the number of binary strings of length n without consecutive 1's
+-- (including the first and last element) equal to the Lucas numbers?
+-- Because these valid strings can be created by appending 0 to every valid
+-- string of length (n-1) and appending either 01 or 10 to every valid string
+-- of length (n-2) depending on if it starts with 0 or 1 respectively.
+-- This actually covers all the cases and doesn't count strings twice.
+-- This is where the recurrence f(n) = f(n-1) + f(n-2) comes from.
+-- And it's clear the base cases are 1 and 3: (0) and (00, 01, 10).

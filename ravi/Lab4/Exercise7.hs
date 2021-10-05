@@ -20,3 +20,8 @@ module Exercise7 where
 -- tr(sym(R)) = [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)]
 
 -- So sym(tr(R)) and tr(sym(R)) are not the same thing.
+
+exercise7 :: IO ()
+exercise7 = do
+    putStrLn "\n--- Exercise 7 ---\n"
+    putStrLn "See comments"
