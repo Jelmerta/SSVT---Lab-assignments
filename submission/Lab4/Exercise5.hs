@@ -6,7 +6,7 @@ import Data.List
 import Exercise4
 import Test.QuickCheck
 import SetOrd
-import Data.Fix
+--import Data.Fix
 
 fp :: Eq a => (a -> a) -> a -> a
 fp f = until (\ x -> x == f x) f
