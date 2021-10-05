@@ -3,7 +3,7 @@ import Exercise2
 import Exercise3
 import Exercise4
 import Exercise5
--- import Exercise6
+import Exercise6
 import Exercise7
 import Exercise8
 import Exercise9
@@ -15,7 +15,7 @@ main = do
     exercise3
     exercise4
     exercise5
-    -- exercise6
+    exercise6
     exercise7
     exercise8
     exercise9
