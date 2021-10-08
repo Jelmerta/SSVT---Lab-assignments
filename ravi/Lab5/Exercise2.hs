@@ -1,4 +1,5 @@
 module Exercise2 where
+import Exercise1
 import LTS
 import Test.QuickCheck
 import Data.List
@@ -20,7 +21,7 @@ labelGen = vectorOf 3 characterGen
 labelsGen :: Gen [Label]
 labelsGen = do n <- choose (0,9)
                l <- vectorOf n labelGen
-               return $ nub l
+               return $ nub l \\ [tau]
 
 transitionGen :: [State] -> [Label] -> Gen LabeledTransition
 transitionGen q l = do s1 <- elements q
@@ -30,20 +31,26 @@ transitionGen q l = do s1 <- elements q
 
 transitionsGen :: [State] -> [Label] -> Gen [LabeledTransition]
 transitionsGen q l = do n <- choose (0,9)
-                        transitions <- vectorOf n $ transitionGen q l
-                        return $ nub transitions
+                        t <- vectorOf n $ transitionGen q l
+                        return $ nub t
 
 ltsGen :: Gen IOLTS
-ltsGen = do states <- statesGen
-            inputs <- labelsGen
-            outputs <- labelsGen
-            transitions <- transitionsGen states $ inputs ++ outputs
-            start <- elements states
-            return (states, inputs, outputs, transitions, start)
+ltsGen = do q <- statesGen
+            l1 <- labelsGen
+            l2 <- labelsGen
+            let li = l1 \\ l2
+            let lu = l2 \\ l1
+            t <- transitionsGen q $ li ++ lu
+            q0 <- elements q
+            return (q, li, lu, t, q0)
 
 
 exercise2 :: IO ()
 exercise2 = do
     putStrLn "\n--- Exercise 2 ---\n"
+    putStrLn "Example of a generated IOLTS:\n"
     lts <- generate ltsGen
     print lts
+    putStrLn "\nTesting the validate function:\n"
+    quickCheck $ forAll ltsGen validateLTS
+    putStrLn ""
