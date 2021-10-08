@@ -112,8 +112,13 @@ tretmanR2 = createIOLTS [(0, "?but", 1), (1, "?but", 1), (0, "?but", 2), (1, "!l
 
 -- Converts an LTS into an IOLTS
 createIOLTS :: [LabeledTransition] -> IOLTS
-createIOLTS transitions = (states, map tail $ filter (\x -> head x == '?') labels, map tail $ filter (\x -> head x == '!') labels, map (\(f, l, t) -> (f, tail l, t)) transitionSet, initState)
+createIOLTS transitions = (states, map tail $ filter (\x -> head x == '?') labels, map tail $ filter (\x -> head x == '!') labels, map (\(f, l, t) -> (f, makeLabel l, t)) transitionSet, initState)
       where (states, labels, transitionSet, initState) = createLTS transitions
+
+makeLabel :: Label -> Label
+makeLabel x | fst == '?' || fst == '!' = tail x
+            | otherwise = x
+      where fst = head x
 
 -- Creates an LTS from a list of transitions. Assumes that this list describes all states and labels, and that the lowest numbered state is the initial state.
 createLTS :: [LabeledTransition] -> LTS

@@ -11,8 +11,8 @@ validTransition q li lu (s1, l, s2) = (s1 `elem` q) && (s2 `elem` q) &&
 
 validateLTS :: IOLTS -> Bool
 validateLTS (q, li, lu, t, q0) = isSet q && isSet li && isSet lu && isSet t &&
-    q0 `elem` q && (not $ tau `elem` li ++ lu) && all (validTransition q li lu) t
-    && (li `intersect` lu) == []
+    q0 `elem` q && (tau `notElem` li ++ lu) && all (validTransition q li lu) t
+    && null (li `intersect` lu)
 
 
 exercise1 :: IO ()
