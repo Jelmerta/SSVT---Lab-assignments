@@ -67,12 +67,21 @@ genPositiveIntegers = abs <$> (arbitrary :: Gen Integer) `suchThat` (>0)
 genRelationPair :: Gen (Integer, Integer)
 genRelationPair = liftM2 (,) genPositiveIntegers genPositiveIntegers
 
--- genRelation :: Gen (Rel Integer)
--- genRelation = 
+genRelation :: Int -> Gen (Rel Integer)
+genRelation nrOfRelations = do
+    n <- choose (0,nrOfRelations)
+    domain <- vector n
+    image <- vector n
+    return (zip domain image)
 
--- We can use reflexive relations as input for our serial relations, as all reflexive relations are serial. This might leave out some other relations that may be relevant.
--- genReflexiveRelation :: Int -> Gen (Rel Int)
--- genReflexiveRelation = 
+-- We can make the relations serial by adding all the identity relations for every element in the relation
+-- Accidentally made a closure???
+genReflexiveRelation :: Int -> Gen (Rel Int)
+genReflexiveRelation nrOfRelations = do
+    n <- choose (0,nrOfRelations)
+    domain <- vector n
+    image <- vectorOf n (elements domain)
+    return (zip domain image)
 
 -- We wanted to make serial relation by selection a domain from 0 to n and then creating an image with values that are in the domain.
 -- genSerialRelation :: Integer -> Gen (Rel Integer)
