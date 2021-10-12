@@ -4,6 +4,7 @@ import Data.List
 import Test.QuickCheck
 import Exercise4
 
+-- TODO: No duplicates
 out :: IOLTS -> Trace -> [Label]
 out iolts trace = findFirstElements (after iolts trace)
 
