@@ -5,6 +5,9 @@ import Data.List
 import Data.Maybe
 import Test.QuickCheck
 
+-- Time spent:
+-- 4 hours
+
 index :: [State] -> State -> Int
 index q s = fromMaybe 0 (elemIndex s q) * 4
 
