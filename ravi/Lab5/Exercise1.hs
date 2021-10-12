@@ -2,13 +2,19 @@ module Exercise1 where
 import LTS
 import Data.List
 
+-- Time spent:
+-- 2.5 hours
+
+-- Checks if list contains no duplicates
 isSet :: Eq a => [a] -> Bool
 isSet xs = nub xs == xs
 
+-- Checks if a transition consists of elements from Q and L
 validTransition :: [State] -> [Label] -> [Label] -> LabeledTransition -> Bool
 validTransition q li lu (s1, l, s2) = (s1 `elem` q) && (s2 `elem` q) &&
     (l `elem` tau : li ++ lu)
 
+-- Checks if the given IOLTS is valid
 validateLTS :: IOLTS -> Bool
 validateLTS (q, li, lu, t, q0) = isSet q && isSet li && isSet lu && isSet t &&
     q0 `elem` q && (tau `notElem` li ++ lu) && all (validTransition q li lu) t
