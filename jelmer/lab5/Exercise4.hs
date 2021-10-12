@@ -20,25 +20,14 @@ after' transitions (t1:trace) state = concatMap (after' transitions trace) (stat
 
 infix 1 `after`
 after :: IOLTS -> Trace -> [State]
-after (_,_,_,t,q0) trace = after' t trace q0
-
-
--- Initial implementation... Not correct
--- removeBeforeAll :: [Trace] -> Trace -> [Trace]
--- removeBeforeAll traces trace = map (`removeBefore` trace) traces
-
--- removeBefore :: Trace -> Trace -> Trace
--- removeBefore [] [] = []
--- removeBefore [] tracePartial = []
--- removeBefore trace [] = trace
--- removeBefore (headFull:traceFull) (headPartial:tracePartial) 
---     | headFull == headPartial = removeBefore traceFull tracePartial
---     | otherwise = headFull:traceFull
-
-
+(_,_,_,t,q0) `after` trace = after' t trace q0
 
 exercise4 :: IO ()
 exercise4 = do
     putStrLn "\n--- Exercise 4 ---\n"
-    -- *Exercise4> after coffeeImpl6 ["coin"]
-    -- [[],[],[],["coffee"]]
+    putStrLn "*Exercise4> after coffeeImpl6 []"
+    print (after coffeeImpl6 [])
+    putStrLn "*Exercise4> after coffeeImpl6 [\"coin\"]"
+    print (after coffeeImpl6 ["coin"])
+    putStrLn "*Exercise4> after coffeeImpl6 [\"coin\", \"coffee\"]"
+    print (after coffeeImpl6 ["coin", "coffee"])
