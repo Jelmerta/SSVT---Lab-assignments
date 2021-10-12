@@ -15,6 +15,7 @@ removeBefore (headFull:traceFull) (headPartial:tracePartial)
     | headFull == headPartial = removeBefore traceFull tracePartial
     | otherwise = headFull:traceFull
 
+-- TODO Will return endless results in some cases
 after :: IOLTS -> Trace -> [Trace]
 after iolts = removeBeforeAll (straces iolts)
 
