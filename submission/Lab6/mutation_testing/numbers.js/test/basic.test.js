@@ -47,7 +47,7 @@ suite('numbers', function () {
 
   // basic.substraction
   test('subtraction should return the difference of items in an array', function (done) {
-    assert.equal(basic.subtraction([5, 1, -1]), 5);
+    assert.equal(basic.subtraction([5, 1, -1, 2]), 3);
     done();
   });
 
