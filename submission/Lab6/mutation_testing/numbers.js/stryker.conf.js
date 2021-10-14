@@ -9,6 +9,9 @@ module.exports = {
   coverageAnalysis: "perTest",
   concurrency: 4,
   timeoutMS: 2000,
+  mutator: {
+    excludedMutations: ['BlockStatement']
+  },
   mochaOptions: {
     ui: "tdd",
   },
