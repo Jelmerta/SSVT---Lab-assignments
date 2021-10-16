@@ -23,7 +23,7 @@ addElements xs = do
   return $ num : xs ++ nums
 
 removeElements :: [Integer] -> Gen [Integer]
-removeElements xs = choose (0, length xs - 1) >>= \x -> return $ take x xs
+removeElements xs = choose (1, length xs - 1) >>= \x -> return $ take x xs
 
 permute :: [Integer] -> Gen [Integer]
 permute xs = do
