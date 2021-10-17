@@ -31,7 +31,7 @@ lsort = sortBy (\xs ys -> compare (length xs) (length ys))
 minimal :: [[a]] -> [[a]]
 minimal [[]] = [[]]
 minimal (xs:ys:xss) | length xs == length ys = xs : minimal(ys : xss)
-                           | otherwise = [[]]
+                           | otherwise = [xs]
 
 -- Input a list of testing properties and a function and get the minial properties subset for the list
 minimalPropSubsets :: [([Integer] -> Integer -> Bool)] -> (Integer -> [Integer]) -> Gen [[([Integer] -> Integer -> Bool)]]
@@ -45,7 +45,23 @@ minimalPropSubsets p f = do
 exercise3 :: IO ()
 exercise3 = do
     putStrLn "-- Exercise 3 --\n"
-    putStrLn "Most of the solution has been implemented but some features are missing"
+    putStrLn "Most of the solution has been implemented but"
+    putStrLn "I did not find a way to print the property function names\n"
+
+    putStrLn "Generally, my approach was:"
+    putStrLn "Firstly, find all the property subsets (subsequesnces) that are complete specifications"
+    putStrLn "!Most of this has been implemented!"
+    putStrLn "Secondly, order by length the complete specification subsets"
+    putStrLn "Thirdly, get the subsets with the less properties (length)\n"
+
+    putStrLn "Below there is an example of how the selection of minimal subsets (properties 1-4)"
+    putStrLn "from all the complete specifications subsets is performed.\n"
+    print  $ minimal $ lsort $ tail $ subsequences [1,2,3,4]
+    putStrLn "\n This would be the case if every property is a complete specification"
+
+
+
+
 
     
 
